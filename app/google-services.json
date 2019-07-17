@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "338023673862",
+    "firebase_url": "https://florify-c940d.firebaseio.com",
+    "project_id": "florify-c940d",
+    "storage_bucket": "florify-c940d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:338023673862:android:3fef82c830817b47",
+        "android_client_info": {
+          "package_name": "com.example.florify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "338023673862-2ka6vkqg01f6fic2hnbnbojonuq44q48.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2SFbceeDTceboQRrxK66VHVRnqQl13xM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "338023673862-2ka6vkqg01f6fic2hnbnbojonuq44q48.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

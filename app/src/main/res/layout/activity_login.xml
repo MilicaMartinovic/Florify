@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity" >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/florify_splash"
+        android:scaleType="fitXY"/>
+
+    <EditText
+        android:id="@+id/etLoginUsername"
+        android:padding="8dp"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="430dp"
+        android:textCursorDrawable="@null"
+        android:textColor="#8DCAB1"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_edit_text"/>
+
+    <EditText
+        android:id="@+id/etLoginPassword"
+        android:inputType="textPassword"
+        android:padding="8dp"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:textCursorDrawable="@null"
+        android:textColor="#8DCAB1"
+        android:layout_marginTop="490dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_edit_text" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="0dp"
+
+            android:text="Forgot your password?">
+
+        </TextView>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Click here!">
+
+        </TextView>
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LOGIN"/>
+    </LinearLayout>
+
+</RelativeLayout>
