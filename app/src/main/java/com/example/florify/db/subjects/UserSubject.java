@@ -11,24 +11,26 @@ import com.example.florify.models.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Observable;
 
 public class UserSubject implements Subject {
     private ArrayList<Observer> observers;
     private DatabaseReference databaseReference;
-    private ArrayList<User> users;
+    private User user;
 
     public UserSubject() {
-        users = new ArrayList<>();
+        user = new User();
         observers = new ArrayList<>();
-        this.databaseReference = DBInstance.getReference("users");
-        this.databaseReference.addValueEventListener(new ValueEventListener() {
+        this.databaseReference = DBInstance.getReference();
+        Query query = this.databaseReference.child("users");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                user = dataSnapshot.getValue(User.class);
+                notifyObservers(user);
             }
 
             @Override
@@ -50,9 +52,9 @@ public class UserSubject implements Subject {
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(Object arg) {
         for (final Observer observer : observers) {
-            observer.update(this, users);
+            observer.update(this, arg);
         }
     }
 }

@@ -11,6 +11,10 @@ public class DBInstance {
         database = FirebaseDatabase.getInstance();
     }
 
+    private FirebaseDatabase getFirebaseInstance() {
+        return database;
+    }
+
     private static DBInstance getInstance() {
         if(dbInstance == null) {
             dbInstance = new DBInstance();
@@ -18,7 +22,7 @@ public class DBInstance {
         return dbInstance;
     }
 
-    public static DatabaseReference getReference(String reference) {
-        return getInstance().getReference("user");
+    public static DatabaseReference getReference() {
+        return getInstance().getFirebaseInstance().getReference();
     }
 }

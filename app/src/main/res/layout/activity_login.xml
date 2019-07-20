@@ -12,54 +12,126 @@
         android:layout_height="match_parent"
         android:src="@drawable/florify_splash"
         android:scaleType="fitXY"/>
-
-    <EditText
-        android:id="@+id/etLoginUsername"
-        android:padding="8dp"
+    <ImageView
+        android:id="@+id/imgLogo"
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="430dp"
-        android:textCursorDrawable="@null"
-        android:textColor="#8DCAB1"
+        android:layout_height="100dp"
+        android:src="@drawable/logo_horizontal"
+        android:layout_alignTop="@+id/imageView"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/custom_edit_text"/>
+        android:layout_marginTop="120dp"/>
 
-    <EditText
-        android:id="@+id/etLoginPassword"
-        android:inputType="textPassword"
-        android:padding="8dp"
-        android:layout_width="250dp"
+    <RelativeLayout
         android:layout_height="wrap_content"
-        android:textCursorDrawable="@null"
-        android:textColor="#8DCAB1"
-        android:layout_marginTop="490dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/custom_edit_text" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
-        <TextView
+        android:layout_width="300dp"
+        android:layout_below="@+id/imgLogo"
+        android:layout_centerHorizontal="true">
+        <EditText
+            android:id="@+id/etLoginUsername"
+            android:padding="12dp"
+            android:hint="Email address or username"
+            android:layout_width="300dp"
+            android:layout_marginTop="50dp"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="0dp"
+            android:textCursorDrawable="@null"
+            android:textColor="#8DCAB1"
+            android:textSize="12sp"
+            android:textColorHint="#8DCAB1"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/custom_edit_text"/>
+        <!--android:layout_marginTop="430dp" -->
 
-            android:text="Forgot your password?">
-
-        </TextView>
-        <TextView
+        <EditText
+            android:id="@+id/etLoginPassword"
+            android:inputType="textPassword"
+            android:hint="Password"
+            android:textSize="12sp"
+            android:textColorHint="#8DCAB1"
+            android:padding="12dp"
+            android:layout_width="300dp"
+            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Click here!">
+            android:textCursorDrawable="@null"
+            android:textColor="#8DCAB1"
+            android:layout_below="@+id/etLoginUsername"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/custom_edit_text" />
 
-        </TextView>
-        <Button
-            android:id="@+id/btnLogin"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="LOGIN"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_below="@+id/etLoginPassword"
+            android:layout_marginTop="30dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:text="Forgot your password?"
+                    android:textColor="#8DCAB1"
+                    android:textSize="12sp">
+
+                </TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="Click here!"
+                    android:textColor="#AFFDE4"
+                    android:clickable="true">
+
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="vertical"
+                >
+
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LOGIN"
+                    android:background="@drawable/custom_login_button"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp"
+                    android:layoutDirection="rtl">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="Don't have an account yet?"
+                        android:textColor="#8DCAB1" />
+
+                    <TextView
+                        android:id="@+id/txtRegister"
+                        android:layout_width="wrap_content"
+                        android:textSize="12sp"
+                        android:layout_height="wrap_content"
+                        android:text="Register here!"
+                        android:textColor="#AFFDE4"
+                        android:clickable="true"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
 
 </RelativeLayout>

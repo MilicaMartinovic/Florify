@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,8 +27,8 @@ import java.util.HashMap;
 public class LoginActivity extends AppCompatActivity implements Observer {
 
     private DatabaseReference mRef;
-    private HashMap<String, Integer> userKeyIndexMapping;
     private EditText etUsername, etPassword;
+    private TextView txtRegister;
     private Button btnLogin;
     private User user;
     private UserSubject userSubject;
@@ -40,9 +41,11 @@ public class LoginActivity extends AppCompatActivity implements Observer {
         getSupportActionBar().hide();
 
         userSubject = new UserSubject();
+        userSubject.register(this);
         etUsername = findViewById(R.id.etLoginUsername);
         etPassword = findViewById(R.id.etLoginPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        txtRegister = findViewById(R.id.txtRegister);
 
         mRef = FirebaseDatabase.getInstance().getReference("users");
 
@@ -63,10 +66,10 @@ public class LoginActivity extends AppCompatActivity implements Observer {
             @Override
             public void onClick(View view) {
                 String username = etUsername.getText().toString();
-                String password = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
 
                 if (user.username.compareTo(username) == 0 && user.password.compareTo(password) == 0) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(),
@@ -75,12 +78,15 @@ public class LoginActivity extends AppCompatActivity implements Observer {
                 }
             }
         });
-    }
 
-//    @Override
-//    public void update(Observable observable, Object o) {
-//
-//    }
+        txtRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
 
     @Override
     public void update(Subject observable, Object arg) {
