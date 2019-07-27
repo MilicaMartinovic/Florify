@@ -7,5 +7,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <style name="CustomAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarItemBackground">@color/darkerBlueGreen</item>
+        <item name="colorPrimary">@color/darkerGreen</item>
+        <item name="colorPrimaryDark">@color/darkerBlueGreen</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+    <style name="AutoCompleteTheme">
+        <item name="colorControlNormal">@color/lighterGreen</item>
+        <item name="colorControlActivated">@color/lighterGreen</item>
+    </style>
 </resources>

@@ -21,12 +21,12 @@ public class UserSubject implements Subject {
     private DatabaseReference databaseReference;
     private User user;
 
-    public UserSubject() {
+    public UserSubject(String email) {
         user = new User();
         observers = new ArrayList<>();
-        this.databaseReference = DBInstance.getReference();
-        Query query = this.databaseReference.child("users");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        this.databaseReference = DBInstance.getReference("users");
+        this.databaseReference.orderByChild("user/email").equalTo(email)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);

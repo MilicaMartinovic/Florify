@@ -22,7 +22,7 @@ public class DBInstance {
         return dbInstance;
     }
 
-    public static DatabaseReference getReference() {
-        return getInstance().getFirebaseInstance().getReference();
+    public static DatabaseReference getReference(String reference) {
+        return getInstance().getFirebaseInstance().getReference(reference);
     }
 }

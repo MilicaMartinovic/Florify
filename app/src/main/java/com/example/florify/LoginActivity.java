@@ -12,26 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.florify.db.subjects.UserSubject;
-import com.example.florify.models.Observer;
-import com.example.florify.models.Subject;
 import com.example.florify.models.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
-public class LoginActivity extends AppCompatActivity implements Observer {
+public class LoginActivity extends AppCompatActivity {
 
-    private DatabaseReference mRef;
     private EditText etUsername, etPassword;
     private TextView txtRegister;
     private Button btnLogin;
     private User user;
     private UserSubject userSubject;
+    private String username, password;
+    private FirebaseAuth mAuth;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,42 +38,41 @@ public class LoginActivity extends AppCompatActivity implements Observer {
 
         getSupportActionBar().hide();
 
-        userSubject = new UserSubject();
-        userSubject.register(this);
+        mAuth = FirebaseAuth.getInstance();
+
+        session = new Session(this);
+
         etUsername = findViewById(R.id.etLoginUsername);
         etPassword = findViewById(R.id.etLoginPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtRegister = findViewById(R.id.txtRegister);
 
-        mRef = FirebaseDatabase.getInstance().getReference("users");
 
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User value = dataSnapshot.getValue(User.class);
-                user = new User(value.username, value.password);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = etUsername.getText().toString();
-                String password = etPassword.getText().toString();
+                username = etUsername.getText().toString();
+                password = etPassword.getText().toString();
+                mAuth.signInWithEmailAndPassword(username, password)
+                        .addOnCompleteListener(LoginActivity.this,
+                                new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    session.addUserEmail(user.getEmail());
+                                    session.addUserId(user.getUid());
+                                    updateUI();
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Autentication faliied",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 
-                if (user.username.compareTo(username) == 0 && user.password.compareTo(password) == 0) {
-                    Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Wrong password or username. Try again",
-                            Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
@@ -88,10 +85,18 @@ public class LoginActivity extends AppCompatActivity implements Observer {
         });
     }
 
+    private void updateUI() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
     @Override
-    public void update(Subject observable, Object arg) {
-        if(observable.equals(this.userSubject)) {
-            this.user = (User)arg;
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null) {
+            updateUI();
+            session.addUserEmail(currentUser.getEmail());
         }
     }
 }
