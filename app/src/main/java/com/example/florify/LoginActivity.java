@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.florify.db.subjects.UserSubject;
 import com.example.florify.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
     private TextView txtRegister;
     private Button btnLogin;
     private User user;
-    private UserSubject userSubject;
     private String username, password;
     private FirebaseAuth mAuth;
     private Session session;
@@ -39,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         mAuth = FirebaseAuth.getInstance();
-
+        mAuth.signOut();
         session = new Session(this);
 
         etUsername = findViewById(R.id.etLoginUsername);
@@ -93,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser != null) {
             updateUI();
             session.addUserEmail(currentUser.getEmail());

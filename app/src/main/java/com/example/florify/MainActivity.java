@@ -2,6 +2,7 @@ package com.example.florify;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -116,24 +117,24 @@ public class MainActivity extends AppCompatActivity {
                         prevMenuItem = bottomNavigationView.getMenu().getItem(0);
                         break;
                     }
-                    case 1 : {
-                        bottomNavigationView
-                                .getMenu()
-                                .getItem(1)
-                                .setChecked(true);
-                        prevMenuItem = bottomNavigationView.getMenu().getItem(1);
-                        break;
-                    }
-                    case 2 : {
-                        bottomNavigationView.getMenu().getItem(3).setChecked(true);
-                        prevMenuItem = bottomNavigationView.getMenu().getItem(3);
-                        break;
-                    }
-                    case 3 : {
-                        bottomNavigationView.getMenu().getItem(4).setChecked(true);
-                        prevMenuItem = bottomNavigationView.getMenu().getItem(4);
-                        break;
-                    }
+//                    case 1 : {
+//                        bottomNavigationView
+//                                .getMenu()
+//                                .getItem(1)
+//                                .setChecked(true);
+//                        prevMenuItem = bottomNavigationView.getMenu().getItem(1);
+//                        break;
+//                    }
+//                    case 2 : {
+//                        bottomNavigationView.getMenu().getItem(3).setChecked(true);
+//                        prevMenuItem = bottomNavigationView.getMenu().getItem(3);
+//                        break;
+//                    }
+//                    case 3 : {
+//                        bottomNavigationView.getMenu().getItem(4).setChecked(true);
+//                        prevMenuItem = bottomNavigationView.getMenu().getItem(4);
+//                        break;
+//                    }
                 }
 
             }
@@ -147,22 +148,28 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_home : {
+                String title = menuItem.getTitle().toString();
+                switch (title) {
+                    case "home" : {
                         viewPager.setCurrentItem(0);
                         return true;
                     }
-                    case R.id.nav_map : {
-                        viewPager.setCurrentItem(1);
-                        return true;
+                    case "map" : {
+                        //viewPager.setCurrentItem(1);
+                        //return true;
+                        break;
                     }
-                    case R.id.nav_profile : {
-                       viewPager.setCurrentItem(2);
-                        return true;
+                    case "profile" : {
+                        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                        startActivity(intent);
+//                       viewPager.setCurrentItem(2);
+//                        return true;
+                        break;
                     }
-                    case R.id.nav_settings : {
-                        viewPager.setCurrentItem(3);
-                        return true;
+                    case "settings" : {
+//                        viewPager.setCurrentItem(3);
+//                        return true;
+                        break;
                     }
                 }
                 return false;
@@ -176,13 +183,13 @@ public class MainActivity extends AppCompatActivity {
     {
         mSectionPageAdapter = new SectionPageAdapter(getSupportFragmentManager());
         feedFragment=new FeedFragment();
-        mapFragment=new MapFragment();
-        profileFragment = new ProfileFragment();
-        settingsFragment = new SettingsFragment();
+//        mapFragment=new MapFragment();
+//        profileFragment = new ProfileFragment();
+//        settingsFragment = new SettingsFragment();
         mSectionPageAdapter.addFragment(feedFragment, "FEED");
-        mSectionPageAdapter.addFragment(mapFragment, "MAP");
-        mSectionPageAdapter.addFragment(profileFragment, "PROFILE");
-        mSectionPageAdapter.addFragment(settingsFragment, "SETTINGS");
+//        mSectionPageAdapter.addFragment(mapFragment, "MAP");
+//        mSectionPageAdapter.addFragment(profileFragment, "PROFILE");
+//        mSectionPageAdapter.addFragment(settingsFragment, "SETTINGS");
         viewPager.setAdapter(mSectionPageAdapter);
     }
 }

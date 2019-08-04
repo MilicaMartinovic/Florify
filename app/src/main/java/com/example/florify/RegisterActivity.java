@@ -1,23 +1,26 @@
 package com.example.florify;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.florify.db.DBInstance;
-import com.example.florify.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -57,16 +60,32 @@ public class RegisterActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                            final FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-                                            String id = firebaseUser.getUid();
-                                            User user = new User(id,
-                                                    username, password,
-                                                    firebaseUser.getEmail());
-                                            DBInstance.getReference("users/user").setValue(user);
-                                            updateUI(firebaseUser);
-                                            session.addUserEmail(email);
-                                            session.addUserId(id);
+                                            final String id = firebaseUser.getUid();
+                                            final Map<String, Object> user = new HashMap<>();
+                                            user.put("username", username);
+                                            user.put("email", firebaseUser.getEmail());
+                                            user.put("password", password);
+
+                                            DBInstance.getCollection("users").document(id)
+                                                    .set(user)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            updateUI(firebaseUser);
+                                                            session.addUserEmail(email);
+                                                            session.addUserId(id);
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(getApplicationContext(),
+                                                                    "Register failed. Try again",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
 
                                         } else {
                                             // If sign in fails, display a message to the user.

@@ -6,10 +6,11 @@
     tools:context=".fragments.FeedFragment"
     android:background="@color/darkerBlueGreen">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Fragment1" />
+        android:layout_height="wrap_content"
+        android:id="@+id/recycler_view">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>

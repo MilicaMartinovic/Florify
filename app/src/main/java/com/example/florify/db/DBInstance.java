@@ -1,17 +1,17 @@
 package com.example.florify.db;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class DBInstance {
-    private FirebaseDatabase database;
+    private FirebaseFirestore database;
     private static volatile DBInstance dbInstance;
 
     private DBInstance() {
-        database = FirebaseDatabase.getInstance();
+        database = FirebaseFirestore.getInstance();
     }
 
-    private FirebaseDatabase getFirebaseInstance() {
+    private FirebaseFirestore getFirebaseInstance() {
         return database;
     }
 
@@ -22,7 +22,7 @@ public class DBInstance {
         return dbInstance;
     }
 
-    public static DatabaseReference getReference(String reference) {
-        return getInstance().getFirebaseInstance().getReference(reference);
+    public static CollectionReference getCollection(String collection) {
+        return getInstance().getFirebaseInstance().collection(collection);
     }
 }
