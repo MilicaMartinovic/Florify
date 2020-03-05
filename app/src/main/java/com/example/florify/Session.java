@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 public class Session {
 
     private SharedPreferences.Editor editor;
-    private SharedPreferences preferences;
+    public SharedPreferences preferences;
     public Session(Context context) {
 
         preferences = context.getSharedPreferences("MyPref", 0); // 0 - for private mode

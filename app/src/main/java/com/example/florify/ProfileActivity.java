@@ -1,11 +1,15 @@
 package com.example.florify;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class ProfileActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.florify.db.services.FetchUserService;
+import com.example.florify.listeners.OnFetchUserCompleted;
+import com.example.florify.models.User;
+
+public class ProfileActivity extends AppCompatActivity implements OnFetchUserCompleted {
 
     private TextView txtProfileName;
     private TextView txtProfileLocation;
@@ -16,13 +20,17 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView txtProfileViews;
     private TextView txtProfileConnections;
 
+    private Session session;
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         getLayoutReferences();
 
-
+        session = new Session(getApplicationContext());
+        PopulateUsersData();
     }
 
     private void getLayoutReferences() {
@@ -34,5 +42,13 @@ public class ProfileActivity extends AppCompatActivity {
         txtProfileLikes = findViewById(R.id.txtProfileLikes);
         txtProfileViews = findViewById(R.id.txtProfileViews);
         txtProfileConnections = findViewById(R.id.txtProfileConnections);
+    }
+
+    private void PopulateUsersData() {
+        new FetchUserService(this).execute(session.getUserId());
+    }
+    @Override
+    public void onFetchCompleted(User user) {
+        this.user = user;
     }
 }

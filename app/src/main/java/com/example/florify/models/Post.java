@@ -11,7 +11,15 @@ public class Post {
     private GeoPoint location;
     private String description;
     private ArrayList<String> tags;
+    private long date;
 
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
 
     public Post() {
         tags = new ArrayList<>();

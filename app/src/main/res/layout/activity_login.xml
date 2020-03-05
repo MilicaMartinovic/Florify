@@ -102,8 +102,9 @@
                     android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LOGIN"
-                    android:background="@drawable/custom_login_button"/>
+                    android:text="Login"
+                    android:textColor="@color/darkerBlueGreen"
+                    android:backgroundTint="@color/lighterGreen"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

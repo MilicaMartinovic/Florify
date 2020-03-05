@@ -1,17 +1,19 @@
 package com.example.florify.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.florify.PlantDetailsActivity;
 import com.example.florify.R;
 import com.example.florify.models.Post;
 
@@ -40,12 +42,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .asBitmap()
                 .load(posts.get(position).getPictureUrl())
                 .into(holder.plantImage);
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        holder.txtPlantName.setText(posts.get(position).getPlantName());
+        holder.txtDescription.setText(posts.get(position).getDescription());
+        holder.txtViewsNumber.setText(Integer.toString(posts.get(position).getViewsNumber()));
+        holder.txtLikesNumber.setText(Integer.toString(posts.get(position).getLikesNumber()));
+        holder.txtAddedBy.setText(posts.get(position).getAddedBy());
+        holder.post = posts.get(position);
+     //   holder.txtDate.setText(new DateTimeHelper().getDateFromMiliseconds(posts.get(position).getDate()));
     }
 
     @Override
@@ -57,10 +61,45 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         CardView parentLayout;
         ImageView plantImage;
+        TextView txtPlantName;
+        TextView txtDescription;
+        TextView txtAddedBy;
+        TextView txtLikesNumber;
+        TextView txtViewsNumber;
+
+        Post post;
+    //    TextView txtDate;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            plantImage = itemView.findViewById(R.id.imgPlant);
+            plantImage = itemView.findViewById(R.id.imgCardImage);
+            txtPlantName = itemView.findViewById(R.id.txtCardPlantName);
+            txtDescription = itemView.findViewById(R.id.txtCardDescrpition);
+            txtAddedBy = itemView.findViewById(R.id.txtCardAddedBy);
+            txtLikesNumber = itemView.findViewById(R.id.txtCardLikesNumber);
+            txtViewsNumber = itemView.findViewById(R.id.txtCardViewsNumber);
+     //       txtDate = itemView.findViewById(R.id.txtCardDate);
+
             parentLayout = itemView.findViewById(R.id.card_view);
+
+            parentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, PlantDetailsActivity.class);
+                    intent.putExtra("plantName", post.getPlantName());
+                    intent.putExtra("pictureUrl", post.getPictureUrl());
+                    intent.putExtra("description", post.getDescription());
+                    intent.putExtra("addedBy", post.getAddedBy());
+                    intent.putExtra("likesNumber", post.getLikesNumber());
+                    intent.putExtra("viewsNumber", post.getViewsNumber());
+                    intent.putExtra("latitude", post.getLocation().getLatitude());
+                    intent.putExtra("longitude", post.getLocation().getLongitude());
+                    intent.putExtra("date", post.getDate());
+                    intent.putExtra("tags", post.getTags());
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }
