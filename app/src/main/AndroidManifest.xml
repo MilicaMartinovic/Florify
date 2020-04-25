@@ -20,7 +20,6 @@
         android:supportsRtl="true"
         android:theme="@style/CustomAppTheme">
         <activity android:name=".PlantUploadActivity"></activity>
-        <activity android:name=".PlantUpload" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

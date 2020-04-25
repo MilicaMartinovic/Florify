@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.florify.db.services.FetchUserService;
+import com.example.florify.listeners.OnFetchUserCompleted;
 import com.example.florify.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements OnFetchUserCompleted {
 
     private EditText etUsername, etPassword;
     private TextView txtRegister;
@@ -61,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     session.addUserEmail(user.getEmail());
                                     session.addUserId(user.getUid());
-                                    updateUI();
+                                    new FetchUserService(LoginActivity.this).execute(session.getUserId());
                                 }
                                 else {
                                     Toast.makeText(getApplicationContext(),
@@ -96,5 +98,11 @@ public class LoginActivity extends AppCompatActivity {
             updateUI();
             session.addUserEmail(currentUser.getEmail());
         }
+    }
+
+    @Override
+    public void onFetchCompleted(User user) {
+        session.addUsername(user.username);
+        updateUI();
     }
 }

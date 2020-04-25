@@ -198,12 +198,12 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/darkerBlueGreen"
         android:text="View Contributions"
         android:textColor="@color/white"
         android:id="@+id/btnProfileViewContributions"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:layout_weight="0.1"/>
+        android:layout_weight="0.1"
+        android:backgroundTint="@color/darkerBlueGreen"/>
 
 </LinearLayout>

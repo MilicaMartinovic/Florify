@@ -1,17 +1,40 @@
 package com.example.florify;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.florify.db.DBInstance;
 import com.example.florify.helpers.FileHelper;
+import com.example.florify.helpers.MapResolver;
+import com.example.florify.models.Post;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+import me.gujun.android.taggroup.TagGroup;
 
 public class PlantUploadActivity extends AppCompatActivity {
 
@@ -19,15 +42,67 @@ public class PlantUploadActivity extends AppCompatActivity {
     private String currentPhotoPath;
     private FileHelper fileHelper;
     private File photoPath;
+    private EditText etPlantName;
+    private EditText etPlantDescription;
+    private Button btnSubmit;
+
+    private MapResolver mapResolver;
+    private StorageReference storageReference;
+    private FirebaseStorage storage;
+    private Location location;
+    private Session session;
+
+    private double longitude, latitude;
+    private String plantName, plantDesc;
+    private ArrayList<String> tags;
+
+    private ProgressDialog progressDialog;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant_upload);
 
+        tags = new ArrayList<>();
         plantView = findViewById(R.id.imgPlantUpload);
+        etPlantName = findViewById(R.id.etPlantUploadName);
+        etPlantDescription = findViewById(R.id.etPlantUploadDescription);
+        btnSubmit = findViewById(R.id.btnPlantUploadSubmit);
+        TagGroup mTagGroup = findViewById(R.id.tabGroupPlantUploadTags);
+
+        session = new Session(this);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        mapResolver = new MapResolver(this);
         fileHelper = new FileHelper();
         currentPhotoPath = getIntent().getStringExtra("path");
         photoPath = getPhoto();
+
+        mTagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
+            @Override
+            public void onAppend(TagGroup tagGroup, String tag) {
+                tags.add(tag);
+            }
+
+            @Override
+            public void onDelete(TagGroup tagGroup, String tag) {
+
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                plantName = etPlantName.getText().toString();
+                plantDesc = etPlantDescription.getText().toString();
+                Location location = mapResolver.getLastKnownLocation();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+
+                uploadImage(photoPath);
+            }
+        });
 
     }
 
@@ -50,5 +125,80 @@ public class PlantUploadActivity extends AppCompatActivity {
         };
 
         return f;
+    }
+
+    public void uploadImage(File image)
+    {
+        progressDialog = new ProgressDialog(PlantUploadActivity.this);
+        progressDialog.setTitle("Uploading");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+
+        Uri file = Uri.fromFile(image);
+
+        StorageReference imageReference = storageReference.child("plants/" + plantName + "_" + session.getUsername() + "_" + System.currentTimeMillis());
+        UploadTask uploadTask = imageReference.putFile(file);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                progressDialog.dismiss();
+                Toast.makeText( getApplicationContext(), "Failed upload", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        addPost(
+                                new Post(0,
+                                        0,
+                                        session.getUsername(),
+                                        new GeoPoint(latitude, longitude),
+                                        plantDesc,
+                                        tags,
+                                        System.currentTimeMillis(),
+                                        plantName,
+                                        uri.toString()));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
+    public void addPost(Post post)
+    {
+        DBInstance.getCollection("posts")
+                .add(post)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(),
+                                "Sucessfuly uploaded plant",
+                                Toast.LENGTH_SHORT).show();
+                        updateUI();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(),
+                                "didn't save",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    public void updateUI(){
+        Intent intent = new Intent(PlantUploadActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }

@@ -50,7 +50,7 @@ public class PlantDetailsActivity extends AppCompatActivity {
         txtDescription.setText(post.getDescription());
         Glide.with(getApplicationContext())
                 .asBitmap()
-                .load(post.getPictureUrl())
+                .load(post.getImageUrl())
                 .into(imgPlant);
 
         mTagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
@@ -68,7 +68,7 @@ public class PlantDetailsActivity extends AppCompatActivity {
 
     private void getExtras(Intent intent) {
         post.setPlantName(intent.getStringExtra("plantName"));
-        post.setPictureUrl(intent.getStringExtra("pictureUrl"));
+        post.setImageUrl(intent.getStringExtra("pictureUrl"));
         post.setDescription(intent.getStringExtra("description"));
         post.setAddedBy(intent.getStringExtra("addedBy"));
         post.setLikesNumber(intent.getIntExtra("likesNumber", 0));

@@ -40,7 +40,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(context)
                 .asBitmap()
-                .load(posts.get(position).getPictureUrl())
+                .load(posts.get(position).getImageUrl())
                 .into(holder.plantImage);
 
         holder.txtPlantName.setText(posts.get(position).getPlantName());
@@ -88,7 +88,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                     Intent intent = new Intent(context, PlantDetailsActivity.class);
                     intent.putExtra("plantName", post.getPlantName());
-                    intent.putExtra("pictureUrl", post.getPictureUrl());
+                    intent.putExtra("pictureUrl", post.getImageUrl());
                     intent.putExtra("description", post.getDescription());
                     intent.putExtra("addedBy", post.getAddedBy());
                     intent.putExtra("likesNumber", post.getLikesNumber());

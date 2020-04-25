@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.florify.MainActivity"
+    android:id="@+id/drawer_layout" >
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/lt_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -54,3 +61,108 @@
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+<com.google.android.material.navigation.NavigationView
+android:id="@+id/nav_view"
+android:layout_width="wrap_content"
+android:layout_height="match_parent"
+android:layout_gravity="start">
+<!-- app:headerLayout="@layout/navigation_header"-->
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="140dp">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/btnMenuLogin"
+        android:text="login"
+        android:textAlignment="textStart"
+        android:textSize="16sp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/white"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:id="@+id/prviseparator"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@id/btnMenuLogin"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="45dp"-->
+        <!--android:id="@+id/btnMenuMyAccount"-->
+        <!--android:text="@string/my_account"-->
+        <!--android:textAlignment="textStart"-->
+        <!--android:textSize="16sp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:layout_below="@id/prviseparator"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"/>-->
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:id="@+id/drugiseparator"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:layout_below="@id/btnMenuMyAccount"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"/>-->
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="45dp"-->
+        <!--android:id="@+id/btnMenuLogout"-->
+        <!--android:text="@string/logout"-->
+        <!--android:textAlignment="textStart"-->
+        <!--android:textSize="16sp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:layout_below="@id/drugiseparator"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"/>-->
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:id="@+id/treciseparator"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:layout_below="@id/btnMenuLogout"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"/>-->
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/colorTextGray"-->
+        <!--android:layout_above="@+id/madeby"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"/>-->
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/madeby"-->
+        <!--android:textColor="@color/colorTextGray"-->
+        <!--android:text="@string/made_by"-->
+        <!--android:textSize="18sp"-->
+        <!--android:textStyle="italic"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_marginEnd="10dp"/>-->
+
+</RelativeLayout>
+
+</com.google.android.material.navigation.NavigationView>
+
+</androidx.drawerlayout.widget.DrawerLayout>

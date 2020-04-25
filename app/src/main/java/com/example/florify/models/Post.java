@@ -12,6 +12,29 @@ public class Post {
     private String description;
     private ArrayList<String> tags;
     private long date;
+    private String plantName;
+
+    private String imageUrl;
+
+    public Post(int likesNumber, int viewsNumber, String addedBy, GeoPoint location, String description, ArrayList<String> tags, long date, String plantName, String imageUrl) {
+        this.likesNumber = likesNumber;
+        this.viewsNumber = viewsNumber;
+        this.addedBy = addedBy;
+        this.location = location;
+        this.description = description;
+        this.tags = tags;
+        this.date = date;
+        this.plantName = plantName;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public long getDate() {
         return date;
@@ -87,14 +110,4 @@ public class Post {
         this.plantName = plantName;
     }
 
-    public String getPictureUrl() {
-        return pictureUrl;
-    }
-
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
-
-    private String plantName;
-    private String pictureUrl;
 }

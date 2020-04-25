@@ -48,7 +48,8 @@ public class FetchUserService extends AsyncTask<String, Void, Void> {
                         if(task.isSuccessful())
                         {
                             DocumentSnapshot documentSnapshot = task.getResult();
-                            documentSnapshot.toObject(User.class);
+                            User user = documentSnapshot.toObject(User.class);
+                            listener.onFetchCompleted(user);
                         }
                     }
                 });

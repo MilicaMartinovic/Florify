@@ -2,6 +2,7 @@ package com.example.florify.models;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
@@ -11,15 +12,32 @@ public class User {
     public String password;
     public String id;
 
+
+    public int views;
+    public int likes;
     @Exclude
     public String key;
-    public String email, location;
-    public ArrayList<Post> usersContributions;
-    public ArrayList<Picture> likes;
+    public String email, motherland;
+    public ArrayList<Post> posts;
+    public ArrayList<User> connections;
+    public GeoPoint location;
+
+    public String badge;
 
     public User() {
-        usersContributions = new ArrayList<>();
-        likes = new ArrayList<>();
+        posts = new ArrayList<>();
+        connections = new ArrayList<>();
+        views = 0;
+        likes = 0;
+        badge = "rookie";
+    }
+
+    public User(String username, String password, String email, String location) {
+        this();
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.motherland = location;
     }
 
 

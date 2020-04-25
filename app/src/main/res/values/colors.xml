@@ -11,4 +11,5 @@
     <color name="lighterGreen">#8DCAB1</color>
     <color name="white">#FFFFFF</color>
     <color name="darkerGrey">#2C3434</color>
+    <color name="lightGray">#D3D3D3</color>
 </resources>

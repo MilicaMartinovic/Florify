@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.florify.db.DBInstance;
+import com.example.florify.models.Post;
+import com.example.florify.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,6 +21,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button btnRegister;
     private FirebaseAuth mAuth;
     private Session session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +71,14 @@ public class RegisterActivity extends AppCompatActivity {
                                             user.put("username", username);
                                             user.put("email", firebaseUser.getEmail());
                                             user.put("password", password);
+                                            user.put("id", id);
+                                            user.put("likes", 0);
+                                            user.put("views", 0);
+                                            user.put("badge", "rookie");
+                                            user.put("posts", new ArrayList<Post>());
+                                            user.put("connections", new ArrayList<User>());
+                                            user.put("motherland", "Serbia, Nis");
+                                            user.put("location", null);
 
                                             DBInstance.getCollection("users").document(id)
                                                     .set(user)
@@ -76,6 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                             updateUI(firebaseUser);
                                                             session.addUserEmail(email);
                                                             session.addUserId(id);
+                                                            session.addUsername(username);
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {

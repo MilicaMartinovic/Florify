@@ -18,6 +18,12 @@ public class Session {
         editor.commit();
     }
 
+    public void addUsername(String username) {
+        editor.putString("username", username);
+        editor.commit();
+    }
+
+
     public void addUserId(String id) {
         editor.putString("id", id);
     }
@@ -28,5 +34,9 @@ public class Session {
 
     public String getUserId() {
         return this.preferences.getString("id", "");
+    }
+
+    public String getUsername() {
+        return this.preferences.getString("username", "");
     }
 }
