@@ -12,15 +12,14 @@ import com.bumptech.glide.Glide;
 import com.example.florify.models.Post;
 import com.google.firebase.firestore.GeoPoint;
 
-import java.util.ArrayList;
-
-import me.gujun.android.taggroup.TagGroup;
+import co.lujun.androidtagview.TagContainerLayout;
 
 public class PlantDetailsActivity extends AppCompatActivity {
 
     private Post post;
     private TextView txtPlantName, txtAddedBy, txtLikesNumber, txtViewsNumber, txtDescription;
     private ImageView imgPlant;
+    private TagContainerLayout mTagGroup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +35,8 @@ public class PlantDetailsActivity extends AppCompatActivity {
 
         getExtras(getIntent());
 
-        TagGroup mTagGroup = findViewById(R.id.tabGroupPlantDetailTags);
-        String [] tagArray = populateTagsArray(this.post.getTags());
-        mTagGroup.setTags(tagArray);
+        mTagGroup = findViewById(R.id.tabGroupPlantDetailsTags);
+        mTagGroup.setTags(post.getTags());
 
         View current = getCurrentFocus();
         if (current != null) current.clearFocus();
@@ -53,17 +51,6 @@ public class PlantDetailsActivity extends AppCompatActivity {
                 .load(post.getImageUrl())
                 .into(imgPlant);
 
-        mTagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
-            @Override
-            public void onAppend(TagGroup tagGroup, String tag) {
-
-            }
-
-            @Override
-            public void onDelete(TagGroup tagGroup, String tag) {
-
-            }
-        });
     }
 
     private void getExtras(Intent intent) {
@@ -78,14 +65,5 @@ public class PlantDetailsActivity extends AppCompatActivity {
         post.setLocation(new GeoPoint(lat, lon));
         post.setDate(intent.getLongExtra("date", 0));
         post.setTags(intent.getStringArrayListExtra("tags"));
-    }
-
-    private String[] populateTagsArray(ArrayList<String> tagsList) {
-        String[] tags = new String[tagsList.size()];
-        int i = 0;
-        for(String tag : tagsList) {
-            tags[i++] = tag;
-        }
-        return tags;
     }
 }

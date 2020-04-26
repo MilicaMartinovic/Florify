@@ -18,8 +18,8 @@ public class User {
     @Exclude
     public String key;
     public String email, motherland;
-    public ArrayList<Post> posts;
-    public ArrayList<User> connections;
+    public ArrayList<String> posts;
+    public ArrayList<String> connections;
     public GeoPoint location;
 
     public String badge;

@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements OnFetchUserCompl
 
         mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
+
         session = new Session(this);
 
         etUsername = findViewById(R.id.etLoginUsername);

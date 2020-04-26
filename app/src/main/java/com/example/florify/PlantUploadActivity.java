@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.florify.Dialogs.OnTagsSubmitted;
+import com.example.florify.Dialogs.TagsDialog;
 import com.example.florify.db.DBInstance;
 import com.example.florify.helpers.FileHelper;
 import com.example.florify.helpers.MapResolver;
@@ -24,6 +27,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -34,9 +38,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import me.gujun.android.taggroup.TagGroup;
+import co.lujun.androidtagview.TagContainerLayout;
 
-public class PlantUploadActivity extends AppCompatActivity {
+public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubmitted {
 
     private ImageView plantView;
     private String currentPhotoPath;
@@ -57,19 +61,24 @@ public class PlantUploadActivity extends AppCompatActivity {
     private ArrayList<String> tags;
 
     private ProgressDialog progressDialog;
-
+    private ImageButton btnAddTags;
+    private TagContainerLayout mTagGroup;
+    private TagsDialog tagsDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant_upload);
 
-        tags = new ArrayList<>();
+        getSupportActionBar().hide();
+
+        tags = new ArrayList<String>();
         plantView = findViewById(R.id.imgPlantUpload);
         etPlantName = findViewById(R.id.etPlantUploadName);
         etPlantDescription = findViewById(R.id.etPlantUploadDescription);
         btnSubmit = findViewById(R.id.btnPlantUploadSubmit);
-        TagGroup mTagGroup = findViewById(R.id.tabGroupPlantUploadTags);
+        btnAddTags = findViewById(R.id.btnPlantUploadAddTags);
+        mTagGroup = findViewById(R.id.tabGroupPlantUploadTags);
 
         session = new Session(this);
         storage = FirebaseStorage.getInstance();
@@ -79,15 +88,11 @@ public class PlantUploadActivity extends AppCompatActivity {
         currentPhotoPath = getIntent().getStringExtra("path");
         photoPath = getPhoto();
 
-        mTagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
+        btnAddTags.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAppend(TagGroup tagGroup, String tag) {
-                tags.add(tag);
-            }
-
-            @Override
-            public void onDelete(TagGroup tagGroup, String tag) {
-
+            public void onClick(View v) {
+                 tagsDialog = new TagsDialog(PlantUploadActivity.this,PlantUploadActivity.this);
+                tagsDialog.show();
             }
         });
 
@@ -178,11 +183,31 @@ public class PlantUploadActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(),
-                                "Sucessfuly uploaded plant",
-                                Toast.LENGTH_SHORT).show();
-                        updateUI();
+                        //progressDialog.dismiss();
+                        String id = documentReference.getId();
+
+                        DBInstance.getCollection("users")
+                                .document(session.getUserId())
+                                .update("posts", FieldValue.arrayUnion(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(),
+                                        "Sucessfuly uploaded plant",
+                                        Toast.LENGTH_SHORT).show();
+                                updateUI();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(),
+                                        "didn't save",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -200,5 +225,12 @@ public class PlantUploadActivity extends AppCompatActivity {
     public void updateUI(){
         Intent intent = new Intent(PlantUploadActivity.this, MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void OnTagsSubmitCompleted(ArrayList<String> tags) {
+        this.tags = tags;
+        this.mTagGroup.setTags(tags);
+        tagsDialog.dismiss();
     }
 }

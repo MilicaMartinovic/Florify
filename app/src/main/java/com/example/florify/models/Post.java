@@ -16,7 +16,18 @@ public class Post {
 
     private String imageUrl;
 
-    public Post(int likesNumber, int viewsNumber, String addedBy, GeoPoint location, String description, ArrayList<String> tags, long date, String plantName, String imageUrl) {
+    public Post(int likesNumber,
+                int viewsNumber,
+                String addedBy,
+                GeoPoint location,
+                String description,
+                ArrayList<String> tags,
+                long date,
+                String plantName,
+                String imageUrl) {
+
+        this.tags = new ArrayList<String>();
+
         this.likesNumber = likesNumber;
         this.viewsNumber = viewsNumber;
         this.addedBy = addedBy;
@@ -45,12 +56,7 @@ public class Post {
     }
 
     public Post() {
-        tags = new ArrayList<>();
-    }
-
-    public void addTag(String tag) {
-        if(!this.tags.contains(tag))
-            this.tags.add(tag);
+        tags = new ArrayList<String>();
     }
 
 
