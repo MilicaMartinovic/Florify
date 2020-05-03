@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:padding="15dp">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etFilterDialogPlantName"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:singleSelection="true"
+        android:clickable="true"
+        app:checkedChip="@+id/plantUploadChipLeaf"
+        android:id="@+id/chipGroupFilterDialog"
+        app:chipSpacingHorizontal="10dp"
+        android:layout_marginTop="15dp"
+        >
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/filterDialogChipLeaf"
+            app:chipIconVisible="true"
+            app:chipBackgroundColor="@color/chip_state_colors"
+            app:chipIcon="@drawable/ic_leaf"
+            android:checkable="true"
+            android:text="leaf"
+            android:textColor="@color/lighterGreen"
+            />
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/filterDialogChipFlower"
+            app:chipIconVisible="true"
+            app:chipBackgroundColor="@color/chip_state_colors"
+            app:chipIcon="@drawable/ic_flower"
+            android:text="flower"
+            android:textColor="@color/lighterGreen"
+            android:checkable="true"
+            />
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/filterDialogChipStake"
+            app:chipIconVisible="true"
+            app:chipBackgroundColor="@color/chip_state_colors"
+            app:chipIcon="@drawable/ic_stake"
+            android:text="stake"
+            android:textColor="@color/lighterGreen"
+            android:checkable="true"
+            />
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/filterDialogChipPlant"
+            app:chipIconVisible="true"
+            app:chipBackgroundColor="@color/chip_state_colors"
+            app:chipIcon="@drawable/ic_whole_plant"
+            android:text="plant"
+            android:textColor="@color/lighterGreen"
+            android:checkable="true"
+            />
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:textColor="@color/darkerBlueGreen"
+        android:text="Radius: "/>
+    <SeekBar
+        android:id="@+id/filterDialogSeekBar"
+        android:max="500"
+        android:progress="50"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"/>
+
+    <Spinner
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/filterDialogSpinner">
+
+    </Spinner>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="25dp">
+        <Button
+            android:id="@+id/btnFilterDialogOK"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@color/darkerBlueGreen"
+            android:text="OK"/>
+        <Button
+            android:id="@+id/btnFilterDialogCancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@color/darkerBlueGreen"
+            android:text="Cancel"/>
+    </LinearLayout>
+</LinearLayout>

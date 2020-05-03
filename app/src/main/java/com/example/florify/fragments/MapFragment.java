@@ -32,11 +32,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback {
     private GoogleMap mMap;
     private MapResolver mapResolver;
     private NetworkHelper networkHelper;
-//    private StringRequest stringRequest;
-//    private StringRequest stringLocationRequest;
     private String[] plant_names;
-//    private String getPlantNamesURL = Constants.serverUrl + "/plants";
-//    private String getPlantLocationsURL = Constants.serverUrl + "/plantLocations";
     private ImageButton magnifier;
 
     private View view;

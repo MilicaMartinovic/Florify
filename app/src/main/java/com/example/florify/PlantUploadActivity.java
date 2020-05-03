@@ -23,9 +23,11 @@ import com.example.florify.db.DBInstance;
 import com.example.florify.helpers.FileHelper;
 import com.example.florify.helpers.MapResolver;
 import com.example.florify.models.Post;
+import com.example.florify.models.PostType;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
@@ -64,6 +66,8 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
     private ImageButton btnAddTags;
     private TagContainerLayout mTagGroup;
     private TagsDialog tagsDialog;
+    private ChipGroup chipGroup;
+    private PostType type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,7 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
         btnAddTags = findViewById(R.id.btnPlantUploadAddTags);
         mTagGroup = findViewById(R.id.tabGroupPlantUploadTags);
 
+        chipGroup = findViewById(R.id.chipGroupPlantUpload);
         session = new Session(this);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -87,6 +92,7 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
         fileHelper = new FileHelper();
         currentPhotoPath = getIntent().getStringExtra("path");
         photoPath = getPhoto();
+        type = PostType.LEAF;
 
         btnAddTags.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +170,8 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
                                         tags,
                                         System.currentTimeMillis(),
                                         plantName,
-                                        uri.toString()));
+                                        uri.toString(),
+                                        getCheckedChipType()));
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -220,6 +227,30 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
                     }
                 });
 
+    }
+
+    private PostType getCheckedChipType() {
+        PostType type = PostType.LEAF;
+        switch (chipGroup.getCheckedChipId())
+        {
+            case R.id.plantUploadChipLeaf : {
+                type = PostType.LEAF;
+                break;
+            }
+            case R.id.plantUploadChipFlower : {
+                type = PostType.FLOWER;
+                break;
+            }
+            case R.id.plantUploadChipStake: {
+                type = PostType.SCAPE;
+                break;
+            }
+            case R.id.plantUploadChipPlant : {
+                type = PostType.WHOLEPLANT;
+                break;
+            }
+        }
+        return type;
     }
 
     public void updateUI(){

@@ -85,7 +85,6 @@
 
 
     </RelativeLayout>
-
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -94,6 +93,70 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             >
+
+            <RelativeLayout android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+
+                >
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/chipGroupPlantUpload"
+                    app:singleSelection="true"
+                    android:clickable="true"
+                    app:checkedChip="@+id/plantUploadChipLeaf"
+                    >
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/plantUploadChipLeaf"
+                        app:chipIconVisible="true"
+                        app:chipBackgroundColor="@color/chip_state_colors"
+                        app:chipIcon="@drawable/ic_leaf"
+                        android:checkable="true"
+                        android:text="leaf"
+                        android:textColor="@color/lighterGreen"
+                        />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/plantUploadChipFlower"
+                        app:chipIconVisible="true"
+                        app:chipBackgroundColor="@color/chip_state_colors"
+                        app:chipIcon="@drawable/ic_flower"
+                        android:text="flower"
+                        android:textColor="@color/lighterGreen"
+                        android:checkable="true"
+                        />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/plantUploadChipStake"
+                        app:chipIconVisible="true"
+                        app:chipBackgroundColor="@color/chip_state_colors"
+                        app:chipIcon="@drawable/ic_stake"
+                        android:text="stake"
+                        android:textColor="@color/lighterGreen"
+                        android:checkable="true"
+                        />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/plantUploadChipPlant"
+                        app:chipIconVisible="true"
+                        app:chipBackgroundColor="@color/chip_state_colors"
+                        app:chipIcon="@drawable/ic_whole_plant"
+                        android:text="plant"
+                        android:textColor="@color/lighterGreen"
+                        android:checkable="true"
+                        />
+                </com.google.android.material.chip.ChipGroup>
+            </RelativeLayout>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

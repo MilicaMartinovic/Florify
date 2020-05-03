@@ -14,6 +14,16 @@ public class Post {
     private long date;
     private String plantName;
 
+    public PostType getPostType() {
+        return postType;
+    }
+
+    public void setPostType(PostType postType) {
+        this.postType = postType;
+    }
+
+    private PostType postType;
+
     private String imageUrl;
 
     public Post(int likesNumber,
@@ -24,7 +34,8 @@ public class Post {
                 ArrayList<String> tags,
                 long date,
                 String plantName,
-                String imageUrl) {
+                String imageUrl,
+                PostType postType) {
 
         this.tags = new ArrayList<String>();
 
@@ -37,6 +48,7 @@ public class Post {
         this.date = date;
         this.plantName = plantName;
         this.imageUrl = imageUrl;
+        this.postType = postType;
     }
 
     public String getImageUrl() {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="datetime_range">
+        <item>Last hour</item>
+        <item>Last day</item>
+        <item>Last week</item>
+        <item>last month</item>
+        <item>Last year</item>
+        <item>Anytime</item>
+    </string-array>
+</resources>

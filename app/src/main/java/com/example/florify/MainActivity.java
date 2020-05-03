@@ -30,6 +30,8 @@ import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.florify.Dialogs.FiltersDialog;
+import com.example.florify.Dialogs.OnFiltersSubmitted;
 import com.example.florify.adapters.SectionPageAdapter;
 import com.example.florify.fragments.FeedFragment;
 import com.example.florify.fragments.MapFragment;
@@ -37,6 +39,8 @@ import com.example.florify.fragments.ProfileFragment;
 import com.example.florify.fragments.SettingsFragment;
 import com.example.florify.helpers.FileHelper;
 import com.example.florify.helpers.MapResolver;
+import com.example.florify.models.DateRangeItems;
+import com.example.florify.models.PostType;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -45,7 +49,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnFiltersSubmitted {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private Session session;
@@ -61,8 +65,10 @@ public class MainActivity extends AppCompatActivity {
     private SectionPageAdapter mSectionPageAdapter;
     private MenuItem prevMenuItem;
     private FloatingActionButton fab;
+    private FloatingActionButton fabFilter;
     private FileHelper fileHelper;
 
+    private FiltersDialog filtersDialog;
     private ActionBar actionBar;
 
     public int LOCATION_REQUEST_CODE = 15;
@@ -91,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
         autoCompleteTextView = findViewById(R.id.search_auto_complete);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fab = findViewById(R.id.fab);
+        fabFilter = findViewById(R.id.fab_filter);
+
+        fabFilter.setVisibility(View.INVISIBLE);
 
         autoCompleteTextView.setVisibility(View.INVISIBLE);
         appName.setVisibility(View.VISIBLE);
@@ -134,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+
+                fabFilter.setVisibility(View.INVISIBLE);
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);
                 }
@@ -153,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                                 .getItem(1)
                                 .setChecked(true);
                         prevMenuItem = bottomNavigationView.getMenu().getItem(1);
+                        fabFilter.setVisibility(View.VISIBLE);
 
                         break;
                     }
@@ -180,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                fabFilter.setVisibility(View.INVISIBLE);
                 String title = menuItem.getTitle().toString();
                 switch (title) {
                     case "home" : {
@@ -190,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     case "map" : {
                         actionBar.hide();
                         viewPager.setCurrentItem(1);
+                        fabFilter.setVisibility(View.VISIBLE);
                         return true;
                         //break;
                     }
@@ -227,6 +241,14 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
+
+        fabFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filtersDialog = new FiltersDialog(MainActivity.this, MainActivity.this);
+                filtersDialog.show();
+            }
+        });
     }
 
 
@@ -298,6 +320,11 @@ public class MainActivity extends AppCompatActivity {
             };
             new Encode_image().execute();
         }
+    }
+
+    @Override
+    public void OnFiltersSubmitCompleted(String plantName, PostType postType, int radius, DateRangeItems dateRange) {
+
     }
 
     public class Encode_image extends AsyncTask<Void, Void, Void> {
