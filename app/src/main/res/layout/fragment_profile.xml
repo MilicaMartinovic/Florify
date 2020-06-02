@@ -91,7 +91,18 @@
 
         </LinearLayout>
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/imgAddConnectionProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:tooltipText="Connection request sent!"
+            android:src="@drawable/ic_check"
+            android:clickable="true"
+            android:onClick="onClickAddConnection"/>
+        <ImageButton
+            android:id="@+id/imgConnectionAddedProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

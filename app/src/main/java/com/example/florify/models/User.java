@@ -21,8 +21,12 @@ public class User {
     public ArrayList<String> posts;
     public ArrayList<String> connections;
     public GeoPoint location;
-
+    public ArrayList<String> newConnectionRequests;
+    public ArrayList<String> oldConnectionRequests;
+    public ArrayList<String> pendingConnectionRequests;
     public String badge;
+    public String imageUrl;
+    public ArrayList<String> likedPosts;
 
     public User() {
         posts = new ArrayList<>();
@@ -30,6 +34,10 @@ public class User {
         views = 0;
         likes = 0;
         badge = "rookie";
+        newConnectionRequests = new ArrayList<>();
+        oldConnectionRequests = new ArrayList<>();
+        pendingConnectionRequests = new ArrayList<>();
+        likedPosts = new ArrayList<>();
     }
 
     public User(String username, String password, String email, String location) {

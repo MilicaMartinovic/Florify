@@ -79,6 +79,11 @@ public class RegisterActivity extends AppCompatActivity {
                                             user.put("connections", new ArrayList<User>());
                                             user.put("motherland", "Serbia, Nis");
                                             user.put("location", null);
+                                            user.put("newConnectionRequests", new ArrayList<String>());
+                                            user.put("oldConnectionRequests", new ArrayList<String>());
+                                            user.put("pendingConnectionRequests", new ArrayList<String>());
+                                            user.put("imageUrl", "https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-account-male-user-icon.png");
+                                            user.put("likedPosts", new ArrayList<>());
 
                                             DBInstance.getCollection("users").document(id)
                                                     .set(user)

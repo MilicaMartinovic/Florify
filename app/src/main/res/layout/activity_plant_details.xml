@@ -67,12 +67,13 @@
                     android:padding="5dp"
                     android:layout_gravity="center_vertical">
 
-                    <ImageView
-                        android:src="@drawable/ic_like"
+                    <ImageButton
+                        android:id="@+id/imgLike"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginRight="3dp"
-                        android:layout_gravity="center_vertical"/>
+                        android:src="@drawable/ic_like" />
 
                     <TextView
                         android:id="@+id/txtPlantDetailLikesNumber"
@@ -117,6 +118,8 @@
                     android:text="User"
                     android:textSize="13sp"
                     android:textColor="@color/darkerBlueGreen"
+                    android:clickable="true"
+                    android:onClick="onClickAddedBy"
                     />
             </LinearLayout>
 

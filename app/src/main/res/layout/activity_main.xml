@@ -59,16 +59,7 @@
         app:backgroundTint="@color/darkerBlueGreen"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/viewPager"
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_filter"
-        app:backgroundTint="@color/darkerBlueGreen"
-        />
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

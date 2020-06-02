@@ -3,16 +3,39 @@ package com.example.florify.models;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Post {
+
+
+    private String id;
     private int likesNumber;
     private int viewsNumber;
     private String addedBy;
-    private GeoPoint location;
+    private GeoPoint l;
     private String description;
     private ArrayList<String> tags;
     private long date;
     private String plantName;
+    private String g;
+
+    public String getAddedById() {
+        return addedById;
+    }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+    public void setAddedById(String addedById) {
+        this.addedById = addedById;
+    }
+
+    private String addedById;
 
     public PostType getPostType() {
         return postType;
@@ -42,7 +65,40 @@ public class Post {
         this.likesNumber = likesNumber;
         this.viewsNumber = viewsNumber;
         this.addedBy = addedBy;
-        this.location = location;
+        this.l = location;
+        this.description = description;
+        this.tags = tags;
+        this.date = date;
+        this.plantName = plantName;
+        this.imageUrl = imageUrl;
+        this.postType = postType;
+    }
+
+    public String getG() {
+        return g;
+    }
+
+    public void setG(String g) {
+        this.g = g;
+    }
+
+    public Post(int likesNumber,
+                int viewsNumber,
+                String addedBy,
+                String addedById,
+                String description,
+                ArrayList<String> tags,
+                long date,
+                String plantName,
+                String imageUrl,
+                PostType postType) {
+
+        this.tags = new ArrayList<String>();
+
+        this.likesNumber = likesNumber;
+        this.viewsNumber = viewsNumber;
+        this.addedBy = addedBy;
+        this.addedById = addedById;
         this.description = description;
         this.tags = tags;
         this.date = date;
@@ -96,12 +152,12 @@ public class Post {
         this.addedBy = addedBy;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public GeoPoint getL() {
+        return l;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
+    public void setL(GeoPoint location) {
+        this.l = location;
     }
 
     public String getDescription() {
@@ -128,4 +184,16 @@ public class Post {
         this.plantName = plantName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post)) return false;
+        Post post = (Post) o;
+        return g.equals(post.g);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(g);
+    }
 }

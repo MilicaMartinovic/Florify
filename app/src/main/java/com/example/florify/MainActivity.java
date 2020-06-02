@@ -30,17 +30,17 @@ import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.florify.Dialogs.FiltersDialog;
-import com.example.florify.Dialogs.OnFiltersSubmitted;
 import com.example.florify.adapters.SectionPageAdapter;
+import com.example.florify.dialogs.FiltersDialog;
+import com.example.florify.dialogs.OnFiltersSubmitted;
 import com.example.florify.fragments.FeedFragment;
 import com.example.florify.fragments.MapFragment;
 import com.example.florify.fragments.ProfileFragment;
 import com.example.florify.fragments.SettingsFragment;
 import com.example.florify.helpers.FileHelper;
 import com.example.florify.helpers.MapResolver;
-import com.example.florify.models.DateRangeItems;
-import com.example.florify.models.PostType;
+import com.example.florify.models.PostFilters;
+import com.example.florify.services.BackgroundService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
     private SectionPageAdapter mSectionPageAdapter;
     private MenuItem prevMenuItem;
     private FloatingActionButton fab;
-    private FloatingActionButton fabFilter;
+    //private FloatingActionButton fabFilter;
     private FileHelper fileHelper;
 
     private FiltersDialog filtersDialog;
@@ -97,9 +97,6 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
         autoCompleteTextView = findViewById(R.id.search_auto_complete);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fab = findViewById(R.id.fab);
-        fabFilter = findViewById(R.id.fab_filter);
-
-        fabFilter.setVisibility(View.INVISIBLE);
 
         autoCompleteTextView.setVisibility(View.INVISIBLE);
         appName.setVisibility(View.VISIBLE);
@@ -144,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
             @Override
             public void onPageSelected(int position) {
 
-                fabFilter.setVisibility(View.INVISIBLE);
+            //    fabFilter.setVisibility(View.INVISIBLE);
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);
                 }
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                                 .getItem(1)
                                 .setChecked(true);
                         prevMenuItem = bottomNavigationView.getMenu().getItem(1);
-                        fabFilter.setVisibility(View.VISIBLE);
+               //         fabFilter.setVisibility(View.VISIBLE);
 
                         break;
                     }
@@ -192,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                fabFilter.setVisibility(View.INVISIBLE);
+          //      fabFilter.setVisibility(View.INVISIBLE);
                 String title = menuItem.getTitle().toString();
                 switch (title) {
                     case "home" : {
@@ -203,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                     case "map" : {
                         actionBar.hide();
                         viewPager.setCurrentItem(1);
-                        fabFilter.setVisibility(View.VISIBLE);
+             //           fabFilter.setVisibility(View.VISIBLE);
                         return true;
                         //break;
                     }
@@ -242,13 +239,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
             return;
         }
 
-        fabFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filtersDialog = new FiltersDialog(MainActivity.this, MainActivity.this);
-                filtersDialog.show();
-            }
-        });
+        startService(new Intent(this, BackgroundService.class));
     }
 
 
@@ -323,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
     }
 
     @Override
-    public void OnFiltersSubmitCompleted(String plantName, PostType postType, int radius, DateRangeItems dateRange) {
+    public void OnFiltersSubmitCompleted(boolean plantNameEnabled, boolean radiusEnabled, boolean dateTimeRangeEnabled, PostFilters postFilters) {
 
     }
 

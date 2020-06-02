@@ -17,9 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.florify.Dialogs.OnTagsSubmitted;
-import com.example.florify.Dialogs.TagsDialog;
 import com.example.florify.db.DBInstance;
+import com.example.florify.dialogs.OnTagsSubmitted;
+import com.example.florify.dialogs.TagsDialog;
 import com.example.florify.helpers.FileHelper;
 import com.example.florify.helpers.MapResolver;
 import com.example.florify.models.Post;
@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
@@ -35,10 +36,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.imperiumlabs.geofirestore.GeoFirestore;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import co.lujun.androidtagview.TagContainerLayout;
 
@@ -165,7 +170,7 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
                                 new Post(0,
                                         0,
                                         session.getUsername(),
-                                        new GeoPoint(latitude, longitude),
+                                        session.getUserId(),
                                         plantDesc,
                                         tags,
                                         System.currentTimeMillis(),
@@ -191,18 +196,39 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         //progressDialog.dismiss();
-                        String id = documentReference.getId();
+                        final String id = documentReference.getId();
 
-                        DBInstance.getCollection("users")
+                        Map<String, Object> map = new HashMap<String, Object>(){
+                            {
+                                put("id", id);
+                            }
+                        };
+                        DBInstance.getCollection("posts")
+                                .document(id)
+                                .update(map);
+
+                        DBInstance
+                                .getCollection("users")
                                 .document(session.getUserId())
-                                .update("posts", FieldValue.arrayUnion(id)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                .update("posts", FieldValue.arrayUnion(id))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                progressDialog.dismiss();
-                                Toast.makeText(getApplicationContext(),
-                                        "Sucessfuly uploaded plant",
-                                        Toast.LENGTH_SHORT).show();
-                                updateUI();
+
+                                CollectionReference collectionReference = DBInstance.getCollection("posts");
+                                GeoFirestore geoFirestore = new GeoFirestore(collectionReference);
+
+                                geoFirestore.setLocation(id, new GeoPoint(latitude, longitude), new GeoFirestore.CompletionCallback() {
+                                            @Override
+                                            public void onComplete(Exception e) {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(getApplicationContext(),
+                                                        "Sucessfuly uploaded plant",
+                                                        Toast.LENGTH_SHORT).show();
+                                                updateUI();
+                                            }
+                                        });
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -226,7 +252,6 @@ public class PlantUploadActivity extends AppCompatActivity implements OnTagsSubm
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
 
     private PostType getCheckedChipType() {

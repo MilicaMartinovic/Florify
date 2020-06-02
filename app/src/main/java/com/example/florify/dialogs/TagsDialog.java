@@ -1,4 +1,4 @@
-package com.example.florify.Dialogs;
+package com.example.florify.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;

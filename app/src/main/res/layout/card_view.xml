@@ -3,7 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="170dp"
+    android:layout_height="250dp"
     android:layout_marginLeft="7dp"
     android:layout_marginTop="7dp"
     android:layout_marginRight="7dp"
@@ -14,47 +14,61 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/darkerBlueGreen"
+            />
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:layout_height="30dp"
+                android:scaleType="centerInside"
+                android:layout_width="30dp"
+                android:src="@drawable/ic_profile"
+                android:id="@+id/imgCardProfileImage"
+                />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtCardViewAddedBy"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/darkerBlueGreen"
+                    android:text="User"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginRight="6dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtCardDate"
+                    android:textStyle="italic"
+                    android:text="05.06.1996."
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/darkerGreen"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.35"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/txtCardPlantName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Plant name"
-                android:textColor="@color/darkerBlueGreen"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/txtCardDescrpition"
-                android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:layout_alignTop="@+id/txtCardPlantName"
-                android:layout_marginTop="30dp"
-                android:ellipsize="end"
-                android:maxLines="7"
-                android:text="Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum"
-                android:textColor="@color/darkerBlueGreen"
-                android:textSize="11sp" />
-
-            <!--<TextView-->
-                <!--android:id="@+id/txtCardDate"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:textColor="#AA122126"-->
-                <!--android:text="05.06.9996" />-->
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.65">
+            >
 
             <ImageView
                 android:id="@+id/imgCardImage"
@@ -74,14 +88,35 @@
                     android:layout_height="match_parent"
                     android:background="#66122126" />
 
-                <TextView
-                    android:id="@+id/txtCardAddedBy"
+                <!--<TextView-->
+                    <!--android:id="@+id/txtCardAddedBy"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentStart="true"-->
+                    <!--android:padding="6dp"-->
+                    <!--android:text="User"-->
+                    <!--android:textColor="#AAFFFFFF" />-->
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:padding="6dp"
-                    android:text="User"
-                    android:textColor="#AAFFFFFF" />
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:id="@+id/imgCardPostType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_whole_plant" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtCardPlantName"
+                        android:text="plant name"
+                        android:textColor="#AAFFFFFF"
+                        android:layout_marginLeft="5dp"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/layoutViewsNumber"

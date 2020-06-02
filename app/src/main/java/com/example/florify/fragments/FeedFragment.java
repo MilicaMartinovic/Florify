@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,7 +57,8 @@ public class FeedFragment extends Fragment implements OnFetchPostsCompleted {
         recyclerView.setAdapter(recyclerViewAdapter);
         gridLayoutManager = new GridLayoutManager(this.getContext(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
-
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
         recyclerViewAdapter.notifyDataSetChanged();
     }
 }

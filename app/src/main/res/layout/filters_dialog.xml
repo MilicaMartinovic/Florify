@@ -5,20 +5,48 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
     android:padding="15dp">
 
-    <EditText
+    <LinearLayout android:layout_height="50dp"
         android:layout_width="match_parent"
+        android:orientation="horizontal">
+        <Button android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="plants"
+            android:backgroundTint="@color/lighterGreen"
+            android:textColor="@color/darkerBlueGreen"
+
+            android:id="@+id/btnFilterDialogPlants"/>
+        <Button android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="users"
+            android:textColor="@color/lighterGreen"
+            android:backgroundTint="@color/darkerBlueGreen"
+            android:id="@+id/btnFilterDialogUsers"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etFilterDialogPlantName"/>
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:hint="enter plant name"
+            android:id="@+id/etFilterDialogPlantName"/>
+        <Switch android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:id="@+id/switchPlantNameFilter"/>
+            />
+    </LinearLayout>
+
 
     <com.google.android.material.chip.ChipGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:singleSelection="true"
-        android:clickable="true"
+        app:singleSelection="false"
         app:checkedChip="@+id/plantUploadChipLeaf"
         android:id="@+id/chipGroupFilterDialog"
         app:chipSpacingHorizontal="10dp"
@@ -34,8 +62,11 @@
             app:chipBackgroundColor="@color/chip_state_colors"
             app:chipIcon="@drawable/ic_leaf"
             android:checkable="true"
-            android:text="leaf"
             android:textColor="@color/lighterGreen"
+            app:textStartPadding="0dp"
+            app:textEndPadding="0dp"
+            app:chipStartPadding="8dp"
+            app:chipEndPadding="8dp"
             />
         <com.google.android.material.chip.Chip
             style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -45,9 +76,12 @@
             app:chipIconVisible="true"
             app:chipBackgroundColor="@color/chip_state_colors"
             app:chipIcon="@drawable/ic_flower"
-            android:text="flower"
             android:textColor="@color/lighterGreen"
             android:checkable="true"
+            app:textStartPadding="0dp"
+            app:textEndPadding="0dp"
+            app:chipStartPadding="8dp"
+            app:chipEndPadding="8dp"
             />
         <com.google.android.material.chip.Chip
             style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -57,9 +91,12 @@
             app:chipIconVisible="true"
             app:chipBackgroundColor="@color/chip_state_colors"
             app:chipIcon="@drawable/ic_stake"
-            android:text="stake"
             android:textColor="@color/lighterGreen"
             android:checkable="true"
+            app:textStartPadding="0dp"
+            app:textEndPadding="0dp"
+            app:chipStartPadding="8dp"
+            app:chipEndPadding="8dp"
             />
         <com.google.android.material.chip.Chip
             style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -69,32 +106,81 @@
             app:chipIconVisible="true"
             app:chipBackgroundColor="@color/chip_state_colors"
             app:chipIcon="@drawable/ic_whole_plant"
-            android:text="plant"
             android:textColor="@color/lighterGreen"
             android:checkable="true"
+
+            app:textStartPadding="0dp"
+            app:textEndPadding="0dp"
+            app:chipStartPadding="8dp"
+            app:chipEndPadding="8dp"
             />
     </com.google.android.material.chip.ChipGroup>
-
-    <TextView android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:textColor="@color/darkerBlueGreen"
-        android:text="Radius: "/>
-    <SeekBar
-        android:id="@+id/filterDialogSeekBar"
-        android:max="500"
-        android:progress="50"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"/>
+        android:orientation="horizontal">
+    <LinearLayout
+        android:layout_weight="5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/darkerBlueGreen"
+                android:id="@+id/txtRadiusFiltersDialog"
+                android:text="Radius: "/>
+            <TextView android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/darkerBlueGreen"
+                android:id="@+id/txtRadiusValueFiltersDialog"/>
+        </LinearLayout>
 
-    <Spinner
-        android:layout_marginTop="20dp"
+        <SeekBar
+            android:id="@+id/filterDialogSeekBar"
+            android:max="500"
+            android:progress="0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+        <Switch android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/switchRadiusFilter"/>
+    </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/filterDialogSpinner">
+        android:layout_marginTop="25dp"
+        android:id="@+id/linearLayoutSpinner">
 
-    </Spinner>
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"
+            android:id="@+id/filterDialogSpinner" />
+        <Switch android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/switchDateTimeFilter"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
