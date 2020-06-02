@@ -69,8 +69,8 @@
 
                     <ImageButton
                         android:id="@+id/imgLike"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
+                        android:layout_width="21dp"
+                        android:layout_height="12dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="3dp"
                         android:src="@drawable/ic_like" />

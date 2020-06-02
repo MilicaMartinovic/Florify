@@ -19,6 +19,7 @@ import com.example.florify.models.Post;
 import com.example.florify.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements OnFetchUs
                 .into(imgPlant);
 
         setAlreadyLiked(session.getUserId());
+        addView(post.getId());
 
         imgLike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +83,13 @@ public class PlantDetailsActivity extends AppCompatActivity implements OnFetchUs
         });
     }
 
+    private void addView(String id) {
+        DBInstance
+                .getCollection("posts")
+                .document(id)
+                .update("viewsNumber", FieldValue.increment(1));
+    }
+
     private void likeOrUnlikePost(String id, final boolean like) {
 
         this.imgLike.setClickable(false);
@@ -88,7 +97,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements OnFetchUs
         final ArrayList<String> likedPosts = myself.likedPosts;
 
         if(like) {
-            if(!likedPosts.contains(id))
+            if(likedPosts.size() == 0 || !likedPosts.contains(id))
                 likedPosts.add(id);
             else
                 Toast.makeText(getApplicationContext(),
@@ -113,11 +122,18 @@ public class PlantDetailsActivity extends AppCompatActivity implements OnFetchUs
                     public void onComplete(@NonNull Task<Void> task) {
 
                         if(task.isSuccessful()) {
-                            if(like)
+                            int liked = Integer.parseInt(txtLikesNumber.getText().toString());
+                            if(like) {
                                 imgLike.setImageResource(R.drawable.ic_liked);
-                            else
-                                imgLike.setImageResource(R.drawable.ic_like);
+                                txtLikesNumber.setText(Integer.toString(++liked));
+                            }
 
+                            else {
+                                imgLike.setImageResource(R.drawable.ic_like);
+                                txtLikesNumber.setText(Integer.toString(--liked));
+                            }
+
+                            isAlreadyLiked = !isAlreadyLiked;
                             imgLike.setClickable(true);
                         }
                         else {
@@ -148,6 +164,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements OnFetchUs
         post.setL(new GeoPoint(lat, lon));
         post.setDate(intent.getLongExtra("date", 0));
         post.setTags(intent.getStringArrayListExtra("tags"));
+        post.setId(intent.getStringExtra("id"));
         post.setAddedById(intent.getStringExtra("addedById"));
     }
 

@@ -149,6 +149,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     intent.putExtra("longitude", post.getL().getLongitude());
                     intent.putExtra("date", post.getDate());
                     intent.putExtra("tags", post.getTags());
+                    intent.putExtra("id",post.getId());
                     context.startActivity(intent);
                 }
             });
