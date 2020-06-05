@@ -112,10 +112,10 @@ public class FiltersDialog extends Dialog implements android.view.View.OnClickLi
         chipStake = findViewById(R.id.filterDialogChipStake);
         chipWholePlant = findViewById(R.id.filterDialogChipPlant);
 
-        switchDateTime.setChecked(true);
-        switchPlantName.setChecked(true);
-        switchRadius.setChecked(true);
-        plantsNameEnabled = radisuEnabled = dateTimeSpinnerEnabled = true;
+        switchDateTime.setChecked(false);
+        switchPlantName.setChecked(false);
+        switchRadius.setChecked(false);
+        plantsNameEnabled = radisuEnabled = dateTimeSpinnerEnabled = false;
 
         selectedDateRange = DateRangeItems.LAST_HOUR;
 

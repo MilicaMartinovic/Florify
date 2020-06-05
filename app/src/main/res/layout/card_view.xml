@@ -151,12 +151,13 @@
                     android:padding="5dp"
                     android:layout_gravity="center_vertical">
 
-                    <ImageView
+                    <ImageButton
                         android:src="@drawable/ic_like"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_marginRight="3dp"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/imgCardLike"/>
 
                     <TextView
                         android:id="@+id/txtCardLikesNumber"

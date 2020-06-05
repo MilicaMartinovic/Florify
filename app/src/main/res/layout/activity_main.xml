@@ -65,105 +65,128 @@
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 <com.google.android.material.navigation.NavigationView
-android:id="@+id/nav_view"
-android:layout_width="wrap_content"
-android:layout_height="match_parent"
-android:layout_gravity="start">
-<!-- app:headerLayout="@layout/navigation_header"-->
-
-<RelativeLayout
-    android:layout_width="match_parent"
+    android:id="@+id/nav_view"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_marginTop="140dp">
+    android:layout_gravity="start"
+    android:background="@color/darkerGreen">
 
-    <Button
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:id="@+id/btnMenuLogin"
-        android:text="login"
-        android:textAlignment="textStart"
-        android:textSize="16sp"
-        android:background="@android:color/transparent"
-        android:textColor="@color/white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
-
-    <View
+        android:layout_height="140dp"
+        android:src="@drawable/leaf_logo"
+        />
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:id="@+id/prviseparator"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimary"
-        android:layout_below="@id/btnMenuLogin"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="140dp">
 
-    <!--<Button-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:id="@+id/btnMenuMyAccount"-->
-        <!--android:text="@string/my_account"-->
-        <!--android:textAlignment="textStart"-->
-        <!--android:textSize="16sp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:textColor="@color/colorPrimary"-->
-        <!--android:layout_below="@id/prviseparator"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"/>-->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:id="@+id/btnMenuConnections"
+            android:text="Connections"
+            android:textAlignment="textStart"
+            android:textSize="15sp"
+            android:stateListAnimator="@null"
+            android:backgroundTint="@android:color/transparent"
+            android:textColor="@color/lightGray"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            style="?android:attr/borderlessButtonStyle"/>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:id="@+id/drugiseparator"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:layout_below="@id/btnMenuMyAccount"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"/>-->
+        <View
+            android:layout_width="match_parent"
+            android:id="@+id/prviseparator"
+            android:layout_height="1dp"
+            android:background="@color/darkerBlueGreen"
+            android:layout_below="@id/btnMenuConnections"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-    <!--<Button-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:id="@+id/btnMenuLogout"-->
-        <!--android:text="@string/logout"-->
-        <!--android:textAlignment="textStart"-->
-        <!--android:textSize="16sp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:textColor="@color/colorPrimary"-->
-        <!--android:layout_below="@id/drugiseparator"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"/>-->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:id="@+id/btnMenuConnectionRequests"
+            android:text="Connection requests"
+            android:textAlignment="textStart"
+            android:textSize="15sp"
+            android:stateListAnimator="@null"
+            android:layout_below="@+id/prviseparator"
+            android:backgroundTint="@android:color/transparent"
+            android:textColor="@color/lightGray"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:id="@+id/treciseparator"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:layout_below="@id/btnMenuLogout"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"/>-->
+        <View
+            android:layout_width="match_parent"
+            android:id="@+id/drugiseparator"
+            android:layout_height="1dp"
+            android:background="@color/darkerBlueGreen"
+            android:layout_below="@id/btnMenuConnectionRequests"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/colorTextGray"-->
-        <!--android:layout_above="@+id/madeby"-->
-        <!--android:layout_marginBottom="10dp"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"/>-->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:id="@+id/btnMenuPendingRequests"
+            android:text="Pending requests"
+            android:stateListAnimator="@null"
+            android:textAlignment="textStart"
+            android:textSize="15sp"
+            android:layout_below="@+id/drugiseparator"
+            android:backgroundTint="@android:color/transparent"
+            android:textColor="@color/lightGray"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/madeby"-->
-        <!--android:textColor="@color/colorTextGray"-->
-        <!--android:text="@string/made_by"-->
-        <!--android:textSize="18sp"-->
-        <!--android:textStyle="italic"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_marginBottom="10dp"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_marginEnd="10dp"/>-->
+        <View
+            android:layout_width="match_parent"
+            android:id="@+id/treciseparator"
+            android:layout_height="1dp"
+            android:background="@color/darkerBlueGreen"
+            android:layout_below="@id/btnMenuPendingRequests"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-</RelativeLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:id="@+id/btnMemiScoreoard"
+            android:text="Scoreboard"
+            android:textAlignment="textStart"
+            android:stateListAnimator="@null"
+            android:textSize="15sp"
+            android:layout_below="@+id/treciseparator"
+            android:backgroundTint="@android:color/transparent"
+            android:textColor="@color/lightGray"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:id="@+id/cetvrtiseparator"
+            android:layout_height="1dp"
+            android:background="@color/darkerBlueGreen"
+            android:layout_below="@id/btnMenuPendingRequests"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:id="@+id/btnMenuLogout"
+            android:text="Logout"
+            android:textAlignment="textStart"
+            android:stateListAnimator="@null"
+            android:textSize="15sp"
+            android:layout_below="@+id/cetvrtiseparator"
+            android:backgroundTint="@android:color/transparent"
+            android:textColor="@color/lightGray"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+    </RelativeLayout>
 
 </com.google.android.material.navigation.NavigationView>
 

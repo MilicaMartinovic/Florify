@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.florify.PlantDetailsActivity;
 import com.example.florify.R;
+import com.example.florify.Session;
 import com.example.florify.db.DBInstance;
 import com.example.florify.helpers.DateTimeHelper;
 import com.example.florify.models.Post;
@@ -62,8 +64,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.txtAddedBy.setText(posts.get(position).getAddedBy());
         holder.txtDate.setText(DateTimeHelper.getDateFromMiliseconds(posts.get(position).getDate()));
         getProfilePicForUser(posts.get(position).getAddedById(), holder);
-
+        setDrawableIfAlreadyLiked(
+                new Session(context).getUserId(),
+                posts.get(position).getId(),
+                holder
+        );
         holder.post = posts.get(position);
+    }
+
+    private void setDrawableIfAlreadyLiked(String userId, final String postId, final ViewHolder holder) {
+        //holder.imgLike
+        DBInstance
+                .getCollection("users")
+                .document(userId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            User user = task.getResult().toObject(User.class);
+                            holder.imgLike.setImageResource(
+                                            user.likedPosts.contains(postId) ?
+                                                    R.drawable.ic_liked :
+                                                    R.drawable.ic_like);
+                        }
+                    }
+                });
     }
 
     private void getProfilePicForUser(String addedById, final ViewHolder holder) {
@@ -118,6 +144,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView txtDate;
         RoundedImageView imgProfile;
         ImageView imgPostType;
+        ImageButton imgLike;
 
         Post post;
 
@@ -132,23 +159,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             imgProfile = itemView.findViewById(R.id.imgCardProfileImage);
             txtDate = itemView.findViewById(R.id.txtCardDate);
             parentLayout = itemView.findViewById(R.id.card_view);
+            imgLike = itemView.findViewById(R.id.imgCardLike);
 
             parentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     Intent intent = new Intent(context, PlantDetailsActivity.class);
-                    intent.putExtra("plantName", post.getPlantName());
-                    intent.putExtra("pictureUrl", post.getImageUrl());
-                    intent.putExtra("description", post.getDescription());
-                    intent.putExtra("addedBy", post.getAddedBy());
-                    intent.putExtra("addedById", post.getAddedById());
-                    intent.putExtra("likesNumber", post.getLikesNumber());
-                    intent.putExtra("viewsNumber", post.getViewsNumber());
-                    intent.putExtra("latitude", post.getL().getLatitude());
-                    intent.putExtra("longitude", post.getL().getLongitude());
-                    intent.putExtra("date", post.getDate());
-                    intent.putExtra("tags", post.getTags());
                     intent.putExtra("id",post.getId());
                     context.startActivity(intent);
                 }

@@ -1,15 +1,16 @@
 package com.example.florify.fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,23 +19,31 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.florify.R;
+import com.example.florify.Session;
+import com.example.florify.UserProfileActivity;
 import com.example.florify.db.DBInstance;
+import com.example.florify.db.services.FetchConnectionsService;
 import com.example.florify.dialogs.FiltersDialog;
 import com.example.florify.dialogs.OnFiltersSubmitted;
 import com.example.florify.helpers.DateTimeHelper;
 import com.example.florify.helpers.ListsHelper;
 import com.example.florify.helpers.MapResolver;
 import com.example.florify.helpers.NetworkHelper;
+import com.example.florify.listeners.OnFetchConnectionsCompleted;
+import com.example.florify.models.CustomMarkerTag;
+import com.example.florify.models.CustomMarkerType;
 import com.example.florify.models.DateRangeItems;
 import com.example.florify.models.Post;
 import com.example.florify.models.PostFilters;
 import com.example.florify.models.PostType;
+import com.example.florify.models.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,9 +52,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.android.SphericalUtil;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFiltersSubmitted {
+public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFiltersSubmitted, OnFetchConnectionsCompleted, GoogleMap.OnMarkerClickListener {
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -54,11 +68,10 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
     private GoogleMap mMap;
     private MapResolver mapResolver;
     private NetworkHelper networkHelper;
-    private String[] plant_names;
-    private ImageButton magnifier;
     private FloatingActionButton floatingActionButton;
     private FiltersDialog filtersDialog;
     private View view;
+    private Session session;
 
     @Nullable
     @Override
@@ -68,12 +81,13 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
 
         networkHelper = new NetworkHelper();
         networkHelper.checkLocation(view.getContext());
+        session = new Session(view.getContext());
 
         mapResolver = new MapResolver(getContext());
         floatingActionButton = view.findViewById(R.id.fab_filter);
 
         initMap();
-        //Context context = this;
+
         final OnFiltersSubmitted mapContext = MapFragment.this;
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +96,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
                 filtersDialog.show();
             }
         });
+
 
         return view;
     }
@@ -104,9 +119,13 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
             mMap.getUiSettings().setZoomControlsEnabled(true);
 
             getAllPosts();
+
+            mMap.setOnMarkerClickListener(this);
+
+            new FetchConnectionsService(this)
+                    .execute(session.getUserId());
         }
         else {
-
             Toast.makeText(getContext(), "GPS not available", Toast.LENGTH_SHORT).show();
         }
     }
@@ -153,48 +172,141 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
 
         final ArrayList<Post> postsByPostType = new ArrayList<>();
 
-        //getPostsWithAllFilters(plantNameEnabled, dateTimeRangeEnabled, postFilters);
+        boolean searchPlants = postFilters.getSearchPlants();
 
-        if (postFilters.getPostTypes().size() > 0 && postFilters.getPostTypes().size() < 4) {
-            getPostsByType(postFilters.getPostTypes()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()) {
-                        for(QueryDocumentSnapshot snapshot : task.getResult()) {
-                            Post post = snapshot.toObject(Post.class);
-                            postsByPostType.add(post);
+        if(searchPlants) {
+            if (postFilters.getPostTypes().size() > 0 && postFilters.getPostTypes().size() < 4) {
+                getPostsByType(postFilters.getPostTypes()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for(QueryDocumentSnapshot snapshot : task.getResult()) {
+                                Post post = snapshot.toObject(Post.class);
+                                postsByPostType.add(post);
+                            }
+                            getPostsWithAllFilters(plantNameEnabled, dateTimeRangeEnabled, postFilters,
+                                    postsByPostType);
                         }
-                        getPostsWithAllFilters(plantNameEnabled, dateTimeRangeEnabled, postFilters,
-                                postsByPostType);
-                    }
-                    else {
-                        Toast.makeText(getContext(), "couldn't fetch", Toast.LENGTH_SHORT).show();
-                        filtersDialog.dismiss();
+                        else {
+                            Toast.makeText(getContext(), "couldn't fetch", Toast.LENGTH_SHORT).show();
+                            filtersDialog.dismiss();
+                        }
+
                     }
 
-                }
-
-            });
+                });
+            }
+            else {
+                DBInstance.getCollection("posts")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    for(QueryDocumentSnapshot snapshot : task.getResult()){
+                                        postsByPostType.add(snapshot.toObject(Post.class));
+                                    }
+                                    getPostsWithAllFilters(plantNameEnabled, dateTimeRangeEnabled, postFilters,
+                                            postsByPostType);
+                                }
+                                else {
+                                    Toast.makeText(getContext(), "couldn't fetch", Toast.LENGTH_SHORT).show();
+                                    filtersDialog.dismiss();
+                                }
+                            }
+                        });
+            }
         }
         else {
-            DBInstance.getCollection("posts")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()) {
-                                for(QueryDocumentSnapshot snapshot : task.getResult()){
-                                    postsByPostType.add(snapshot.toObject(Post.class));
+            if(radiusEnabled && plantNameEnabled) {
+                DBInstance
+                        .getCollection("users")
+                        .whereEqualTo("username", postFilters.getPlantName())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                List<User> users = task.getResult().toObjects(User.class);
+                                ArrayList<User> usersToShow = new ArrayList<>();
+                                int radius = postFilters.getRadius();
+                                if(radius > 0) {
+                                    Location myLocation = mapResolver.getLastKnownLocation();
+                                    if(myLocation != null) {
+                                        for(User user : users) {
+                                            double distanceInM = SphericalUtil.computeDistanceBetween(
+                                                    new LatLng(myLocation.getLatitude(), myLocation.getLongitude()),
+                                                    new LatLng(user.location.getLatitude(), user.location.getLongitude()));
+
+                                            if ((distanceInM/1000) < radius)
+                                                usersToShow.add(user);
+
+                                        }
+                                    }
+                                    mMap.clear();
+                                    addCustomMarkers(usersToShow);
+                                    filtersDialog.dismiss();
                                 }
-                                getPostsWithAllFilters(plantNameEnabled, dateTimeRangeEnabled, postFilters,
-                                        postsByPostType);
                             }
-                            else {
-                                Toast.makeText(getContext(), "couldn't fetch", Toast.LENGTH_SHORT).show();
+                        });
+            }
+            else if(plantNameEnabled && !radiusEnabled){
+                DBInstance
+                        .getCollection("users")
+                        .whereEqualTo("username", postFilters.getPlantName())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                List<User> users = task.getResult().toObjects(User.class);
+                                mMap.clear();
+                                addCustomMarkers(new ArrayList<User>(users));
                                 filtersDialog.dismiss();
                             }
-                        }
-                    });
+                        });
+            }
+            else if(!plantNameEnabled && radiusEnabled) {
+                DBInstance
+                        .getCollection("users")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                List<User> users = task.getResult().toObjects(User.class);
+                                ArrayList<User> usersToShow = new ArrayList<>();
+                                int radius = postFilters.getRadius();
+                                if(radius > 0) {
+                                    Location myLocation = mapResolver.getLastKnownLocation();
+                                    if(myLocation != null) {
+                                        for(User user : users) {
+                                            double distanceInM = SphericalUtil.computeDistanceBetween(
+                                                    new LatLng(myLocation.getLatitude(), myLocation.getLongitude()),
+                                                    new LatLng(user.location.getLatitude(), user.location.getLongitude()));
+
+                                            if ((distanceInM/1000) < radius)
+                                                usersToShow.add(user);
+                                        }
+                                    }
+                                    mMap.clear();
+                                    addCustomMarkers(usersToShow);
+                                    filtersDialog.dismiss();
+                                }
+                            }
+                        });
+            }
+            else {
+                DBInstance
+                        .getCollection("users")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                List<User> users = task.getResult().toObjects(User.class);
+                                mMap.clear();
+                                addCustomMarkers(new ArrayList<User>(users));
+                                filtersDialog.dismiss();
+                            }
+                        });
+            }
         }
     }
 
@@ -400,5 +512,89 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), res );
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
+    }
+
+    public void addCustomMarkers(ArrayList<User> users) {
+
+        for(final User user : users) {
+
+            Marker mapMarker = null;
+            try {
+                Bitmap result = new LoadImageFromWeb()
+                        .execute(user).get();
+
+                CustomMarkerTag customMarkerTag = new CustomMarkerTag() {{
+                    setId(user.id);
+                    setType(CustomMarkerType.USER);
+                }};
+                mapMarker = mMap.addMarker(new MarkerOptions()
+                        .position(
+                                new LatLng(
+                                        user.location.getLatitude(),
+                                        user.location.getLongitude()
+                                )
+                        )
+                        .icon(BitmapDescriptorFactory.fromBitmap(result))
+                );
+                mapMarker.setTag(customMarkerTag);
+
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(mapMarker == null) {
+                Toast
+                    .makeText(getContext(),
+                    "Fail",
+                            Toast.LENGTH_SHORT)
+                    .show();
+            }
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        CustomMarkerTag tag = ((CustomMarkerTag)marker.getTag());
+        if(tag.type == CustomMarkerType.USER) {
+            String userId = tag.id;
+            Intent intent = new Intent(getContext(), UserProfileActivity.class);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        }
+        return true;
+    }
+
+    @Override
+    public void onFetchConnectionsCompleted(ArrayList<User> users) {
+        if(users != null)
+            addCustomMarkers(users);
+        else
+            Toast.makeText(
+                    getContext(),
+                    "fail",
+                    Toast.LENGTH_SHORT
+            ).show();
+    }
+
+
+    private class LoadImageFromWeb extends AsyncTask<User, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(User... users) {
+            try {
+                Bitmap bmImg;
+                URL url = new URL(users[0].imageUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoInput(true);
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                bmImg = BitmapFactory.decodeStream(is);
+
+                return Bitmap.createScaledBitmap(bmImg, 80, 80, true);
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
     }
 }

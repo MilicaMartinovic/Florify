@@ -21,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/CustomAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".PendingConnectionsActivity"></activity>
+        <activity android:name=".ConnectionsActivity" />
+        <activity android:name=".ScoreboradActivity" />
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".ConnectionRequestActivity" />
         <activity android:name=".PlantUploadActivity" />

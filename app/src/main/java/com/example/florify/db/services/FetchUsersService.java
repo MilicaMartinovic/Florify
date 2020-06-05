@@ -27,23 +27,44 @@ public class FetchUsersService extends AsyncTask<ArrayList<String>, Void, Void> 
     protected Void doInBackground(ArrayList<String>... arrayLists) {
         ArrayList<String> ids = arrayLists[0];
 
-        final ArrayList<User> users = new ArrayList<>();
-        DBInstance.getCollection("users")
-                .whereIn("id", ids)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            for(QueryDocumentSnapshot doc : task.getResult()) {
-                                User user = doc.toObject(User.class);
-                                users.add(user);
+        if(ids != null) {
+            final ArrayList<User> users = new ArrayList<>();
+            DBInstance.getCollection("users")
+                    .whereIn("id", ids)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()) {
+                                for(QueryDocumentSnapshot doc : task.getResult()) {
+                                    User user = doc.toObject(User.class);
+                                    users.add(user);
+                                }
+                                if(users.size() > 0)
+                                    listener.onFetchUsersCompleted(users);
                             }
-                            if(users.size() > 0)
-                                listener.onFetchUsersCompleted(users);
                         }
-                    }
-                });
+                    });
+        }
+        else {
+            final ArrayList<User> users = new ArrayList<>();
+            DBInstance.getCollection("users")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()) {
+                                for(QueryDocumentSnapshot doc : task.getResult()) {
+                                    User user = doc.toObject(User.class);
+                                    users.add(user);
+                                }
+                                if(users.size() > 0)
+                                    listener.onFetchUsersCompleted(users);
+                            }
+                        }
+                    });
+        }
+
         return null;
     }
 }

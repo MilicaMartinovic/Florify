@@ -88,7 +88,6 @@ public class RecyclerViewAdapterContributions extends RecyclerView.Adapter<Recyc
             txtViewsNumber = itemView.findViewById(R.id.txtCardContributionsViewsNumber);
             imgPostType = itemView.findViewById(R.id.imgCardContributionsPostType);
 
-
             parentLayout = itemView.findViewById(R.id.cardview_contributions);
 
             parentLayout.setOnClickListener(new View.OnClickListener() {
@@ -96,17 +95,6 @@ public class RecyclerViewAdapterContributions extends RecyclerView.Adapter<Recyc
                 public void onClick(View v) {
 
                     Intent intent = new Intent(context, PlantDetailsActivity.class);
-                    intent.putExtra("plantName", post.getPlantName());
-                    intent.putExtra("pictureUrl", post.getImageUrl());
-                    intent.putExtra("description", post.getDescription());
-                    intent.putExtra("addedBy", post.getAddedBy());
-                    intent.putExtra("addedById", post.getAddedById());
-                    intent.putExtra("likesNumber", post.getLikesNumber());
-                    intent.putExtra("viewsNumber", post.getViewsNumber());
-                    intent.putExtra("latitude", post.getL().getLatitude());
-                    intent.putExtra("longitude", post.getL().getLongitude());
-                    intent.putExtra("date", post.getDate());
-                    intent.putExtra("tags", post.getTags());
                     intent.putExtra("id",post.getId());
                     context.startActivity(intent);
                 }

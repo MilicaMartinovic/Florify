@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
     private SectionPageAdapter mSectionPageAdapter;
     private MenuItem prevMenuItem;
     private FloatingActionButton fab;
-    //private FloatingActionButton fabFilter;
+    private Button btnMenuConnections, btnMenuConnectionRequests,
+            btnMenuPendingConnections, btnMenuScoreboard, btnMenuLogout;
     private FileHelper fileHelper;
 
     private FiltersDialog filtersDialog;
@@ -79,7 +81,14 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, 1, 0);
+
+        mToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                1,
+                0
+        );
+
         session = new Session(this);
         fileHelper = new FileHelper();
 
@@ -105,6 +114,13 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
         autoCompleteTextView.clearFocus();
         autoCompleteTextView.setText("");
 
+        btnMenuConnections = findViewById(R.id.btnMenuConnections);
+        btnMenuConnectionRequests = findViewById(R.id.btnMenuConnectionRequests);
+        btnMenuPendingConnections = findViewById(R.id.btnMenuPendingRequests);
+        btnMenuScoreboard = findViewById(R.id.btnMemiScoreoard);
+        btnMenuLogout = findViewById(R.id.btnMenuLogout);
+
+        setMenuClickListeners();
         magnifier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,8 +177,6 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                                 .getItem(1)
                                 .setChecked(true);
                         prevMenuItem = bottomNavigationView.getMenu().getItem(1);
-               //         fabFilter.setVisibility(View.VISIBLE);
-
                         break;
                     }
                     case 2 : {
@@ -189,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-          //      fabFilter.setVisibility(View.INVISIBLE);
                 String title = menuItem.getTitle().toString();
                 switch (title) {
                     case "home" : {
@@ -200,18 +213,12 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                     case "map" : {
                         actionBar.hide();
                         viewPager.setCurrentItem(1);
-             //           fabFilter.setVisibility(View.VISIBLE);
                         return true;
-                        //break;
                     }
                     case "profile" : {
-//                        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-//                        startActivity(intent);
-
                         actionBar.hide();
                        viewPager.setCurrentItem(2);
                         return true;
-                        //break;
                     }
                     case "settings" : {
                         viewPager.setCurrentItem(3);
@@ -231,15 +238,52 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
         });
 
 
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
                         , LOCATION_REQUEST_CODE);
             }
             return;
         }
 
         startService(new Intent(this, BackgroundService.class));
+    }
+
+    private void setMenuClickListeners() {
+        btnMenuConnections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btnMenuPendingConnections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btnMenuConnectionRequests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btnMenuScoreboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btnMenuLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 
@@ -258,7 +302,8 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -281,7 +326,11 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                     }
 
                 } else {
-                    Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                            this,
+                            "camera permission denied",
+                            Toast.LENGTH_LONG
+                    ).show();
                 }
 
             }
@@ -314,7 +363,10 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
     }
 
     @Override
-    public void OnFiltersSubmitCompleted(boolean plantNameEnabled, boolean radiusEnabled, boolean dateTimeRangeEnabled, PostFilters postFilters) {
+    public void OnFiltersSubmitCompleted(boolean plantNameEnabled,
+                                         boolean radiusEnabled,
+                                         boolean dateTimeRangeEnabled,
+                                         PostFilters postFilters) {
 
     }
 
