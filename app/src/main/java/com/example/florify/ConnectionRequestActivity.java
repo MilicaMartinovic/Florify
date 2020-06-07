@@ -1,6 +1,8 @@
 package com.example.florify;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -22,15 +24,18 @@ public class ConnectionRequestActivity extends AppCompatActivity implements OnFe
     private ReyclerViewConnectionRequestsAdapter recyclerViewAdapter;
     private Session session;
     private ArrayList<User> users;
-
+    private TextView textViewNoNew;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection_request);
 
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         users = new ArrayList<>();
         session = new Session(this);
         recyclerView = findViewById(R.id.recycler_view_connection_requests);
+        textViewNoNew = findViewById(R.id.txtNoNewConnectionRequests);
 
         populateConnectionRequests();
 
@@ -49,8 +54,12 @@ public class ConnectionRequestActivity extends AppCompatActivity implements OnFe
     @Override
     public void onFetchCompleted(User user) {
         ArrayList<String> ids = user.newConnectionRequests;
-        ids.addAll(user.oldConnectionRequests);
-        new FetchUsersService(this).execute(ids);
+        for(String id : user.oldConnectionRequests)
+            ids.add(id);
+        if(ids.size() > 0)
+            new FetchUsersService(this).execute(ids);
+        else
+            textViewNoNew.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -9,13 +9,13 @@
     </style>
     <style name="CustomAppTheme" parent="Theme.MaterialComponents">
         <item name="actionBarItemBackground">@color/darkerBlueGreen</item>
-        <item name="colorPrimary">@color/darkerGreen</item>
+        <item name="colorPrimary">@color/darkerBlueGreen</item>
         <item name="colorPrimaryDark">@color/darkerBlueGreen</item>
         <item name="colorAccent">@color/white</item>
     </style>
     <style name="AutoCompleteTheme">
-        <item name="colorControlNormal">@color/lighterGreen</item>
-        <item name="colorControlActivated">@color/lighterGreen</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
     </style>
     <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog">
         <item name="android:windowMinWidthMajor">100%</item>

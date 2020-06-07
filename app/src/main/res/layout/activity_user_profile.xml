@@ -33,7 +33,8 @@
             android:src="@drawable/ic_default_profile_picture"
             app:riv_mutate_background="true"
             app:riv_oval="true"
-            app:riv_tile_mode="repeat" android:id="@+id/imgProfileImage"/>
+            app:riv_tile_mode="repeat"
+            android:id="@+id/imgProfileImage"/>
     </RelativeLayout>
 
     <LinearLayout

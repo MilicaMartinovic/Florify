@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.florify.PlantDetailsActivity;
 import com.example.florify.R;
 import com.example.florify.Session;
 import com.example.florify.UserProfileActivity;
@@ -331,9 +332,10 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
                 });
     }
 
-    private Task<QuerySnapshot> getPlantNameSnapshot(String plantName) {
+    private Task<QuerySnapshot> getPlantNameAndTagSnapshot(String plantName) {
         Task<QuerySnapshot> plantNameSnapshot = DBInstance.getCollection("posts")
                 .whereEqualTo("plantName", plantName)
+                .whereArrayContains("tags", plantName)
                 .get();
         return plantNameSnapshot;
     }
@@ -356,18 +358,18 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
     private void getPostsWithAllFilters(boolean plantNameEnabled, boolean dateTimeRangeEnabled,
                                         final PostFilters filters, final ArrayList<Post> postsByType) {
 
-        final ArrayList<Post> postsByPlantName = new ArrayList<>();
+        final ArrayList<Post> postsByPlantNameOrTag = new ArrayList<>();
         final ArrayList<Post> postsByDateRange = new ArrayList<>();
 
         if(plantNameEnabled && dateTimeRangeEnabled) {
-            getPlantNameSnapshot(filters.getPlantName()).addOnCompleteListener(
+            getPlantNameAndTagSnapshot(filters.getPlantName()).addOnCompleteListener(
                     new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()) {
                         for(QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             Post post = documentSnapshot.toObject(Post.class);
-                            postsByPlantName.add(post);
+                            postsByPlantNameOrTag.add(post);
                         }
 
                         getDateTimeRange(filters.getDateRange()).addOnCompleteListener(
@@ -382,7 +384,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
 
                                     ArrayList<Post> intersectedFirst =
                                             new ListsHelper<Post>().
-                                                    intersectTwoLists(postsByPlantName, postsByDateRange);
+                                                    intersectTwoLists(postsByPlantNameOrTag, postsByDateRange);
                                     ArrayList<Post> intersectedFinal =
                                             new ListsHelper<Post>().
                                                     intersectTwoLists(intersectedFirst, postsByType);
@@ -406,18 +408,18 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
             });
         }
         if(plantNameEnabled && !dateTimeRangeEnabled) {
-            getPlantNameSnapshot(filters.getPlantName()).addOnCompleteListener(
+            getPlantNameAndTagSnapshot(filters.getPlantName()).addOnCompleteListener(
                     new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()) {
                         for(QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             Post post = documentSnapshot.toObject(Post.class);
-                            postsByPlantName.add(post);
+                            postsByPlantNameOrTag.add(post);
                         }
 
                         ArrayList<Post> intersectedFinal =
-                                new ListsHelper<Post>().intersectTwoLists(postsByPlantName, postsByType);
+                                new ListsHelper<Post>().intersectTwoLists(postsByPlantNameOrTag, postsByType);
                         getPostsWithinRadiusAndUpdateUI(intersectedFinal, filters.getRadius());
                     }
                     else {
@@ -482,10 +484,17 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
 
     private void addMarkersOnMap(ArrayList<Post> posts) {
         mMap.clear();
-        for(Post post : posts) {
+        for(final Post post : posts) {
             mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(post.getL().getLatitude(),
                     post.getL().getLongitude())));
-            mMap.addMarker(configureCustomMarker(post));
+            Marker marker = mMap.addMarker(configureCustomMarker(post));
+
+            CustomMarkerTag customMarkerTag = new CustomMarkerTag() {{
+                setId(post.getId());
+                setType(CustomMarkerType.POST);
+            }};
+
+            marker.setTag(customMarkerTag);
         }
     }
 
@@ -555,12 +564,22 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback, OnFilt
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
         CustomMarkerTag tag = ((CustomMarkerTag)marker.getTag());
         if(tag.type == CustomMarkerType.USER) {
             String userId = tag.id;
             Intent intent = new Intent(getContext(), UserProfileActivity.class);
             intent.putExtra("userId", userId);
             startActivity(intent);
+        }
+        else if(tag.type == CustomMarkerType.POST) {
+            String postId = tag.id;
+            Intent intent = new Intent(getContext(), PlantDetailsActivity.class);
+            intent.putExtra("id", postId);
+            startActivity(intent);
+        }
+        else {
+            return false;
         }
         return true;
     }

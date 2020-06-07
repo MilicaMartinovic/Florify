@@ -121,9 +121,7 @@ public class FiltersDialog extends Dialog implements android.view.View.OnClickLi
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
                 R.array.datetime_range, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -190,6 +188,10 @@ public class FiltersDialog extends Dialog implements android.view.View.OnClickLi
                 etPlantName.setHint("enter user name");
                 chipGroup.setVisibility(View.GONE);
                 linearLayout.setVisibility(View.GONE);
+
+                switchDateTime.setChecked(false);
+                switchPlantName.setChecked(false);
+                switchRadius.setChecked(false);
 
             }
         });

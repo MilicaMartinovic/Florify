@@ -12,4 +12,6 @@
     <color name="white">#FFFFFF</color>
     <color name="darkerGrey">#2C3434</color>
     <color name="lightGray">#D3D3D3</color>
+    <color name="ligntBlue">#D7E3E7</color>
+
 </resources>

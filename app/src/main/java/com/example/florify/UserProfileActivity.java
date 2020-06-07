@@ -12,11 +12,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.florify.db.services.FetchMyPostsViewsAndLIkes;
 import com.example.florify.db.services.FetchPostsService;
 import com.example.florify.db.services.FetchUserService;
 import com.example.florify.db.services.RequestConnectionService;
 import com.example.florify.dialogs.ContributionsPopup;
 import com.example.florify.dialogs.OnContributionsClose;
+import com.example.florify.helpers.ContributionScoreCalc;
+import com.example.florify.listeners.OnFetchMyPostsViewsAndLikesComplted;
 import com.example.florify.listeners.OnFetchPostsCompleted;
 import com.example.florify.listeners.OnFetchUserCompleted;
 import com.example.florify.listeners.OnRequestedConnectionService;
@@ -29,7 +32,8 @@ import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 
-public class UserProfileActivity extends AppCompatActivity implements OnFetchUserCompleted, OnRequestedConnectionService, OnFetchPostsCompleted, OnContributionsClose {
+public class UserProfileActivity extends AppCompatActivity implements OnFetchUserCompleted,
+        OnRequestedConnectionService, OnFetchPostsCompleted, OnContributionsClose, OnFetchMyPostsViewsAndLikesComplted {
     private TextView txtProfileName;
     private TextView txtProfileLocation;
     private TextView txtProfileLevel;
@@ -117,11 +121,15 @@ public class UserProfileActivity extends AppCompatActivity implements OnFetchUse
 
         String id = getIntent().getStringExtra("userId");
         new FetchUserService(this).execute(id);
+        new FetchMyPostsViewsAndLIkes(
+                UserProfileActivity.this, user
+        ).execute(id);
     }
 
     @Override
     public void onFetchCompleted(User user) {
         this.user = user;
+
         populateProfile();
     }
 
@@ -132,6 +140,13 @@ public class UserProfileActivity extends AppCompatActivity implements OnFetchUse
                 (user.connections == null || user.connections.size() == 0) ?
                         "0" : Integer.toString(user.connections.size())
         );
+        txtProfilePosts.setText(
+                (user.posts == null || user.posts.size() ==0) ?
+                        "0" : Integer.toString(user.posts.size())
+         );
+
+
+
         txtProfileLevel.setText(user.badge);
 
         Transformation transformation = new RoundedTransformationBuilder()
@@ -187,5 +202,13 @@ public class UserProfileActivity extends AppCompatActivity implements OnFetchUse
     @Override
     public void OnContributionsClose() {
         this.contributionsPopup.dismiss();
+    }
+
+    @Override
+    public void OnFetchMyPostsViewsAndLikesComplted(int views, int likes, User user) {
+        int score = ContributionScoreCalc.calculateScore(likes,views,user.posts.size());
+        txtProfileLikes.setText(Integer.toString(likes));
+        txtProfileViews.setText(Integer.toString(views));
+        txtProfileContributionScore.setText(Integer.toString(score));
     }
 }

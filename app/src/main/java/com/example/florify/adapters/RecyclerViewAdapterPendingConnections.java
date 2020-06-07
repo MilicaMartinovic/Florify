@@ -22,17 +22,19 @@ import java.util.ArrayList;
 public class RecyclerViewAdapterPendingConnections  extends RecyclerView.Adapter<RecyclerViewAdapterPendingConnections.ViewHolderConnectionRequests> {
     private ArrayList<User> users = new ArrayList<>();
     private Context context;
+    private boolean isPending;
 
-    public RecyclerViewAdapterPendingConnections(ArrayList<User> users, Context context)
+    public RecyclerViewAdapterPendingConnections(ArrayList<User> users, Context context, boolean isPending)
     {
         this.users = users;
         this.context = context;
+        this.isPending = isPending;
     }
 
     @NonNull
     @Override
     public RecyclerViewAdapterPendingConnections.ViewHolderConnectionRequests onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.connection_card_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_connection, parent, false);
         RecyclerViewAdapterPendingConnections.ViewHolderConnectionRequests holder = new RecyclerViewAdapterPendingConnections.ViewHolderConnectionRequests(view);
         return holder;
     }
@@ -63,6 +65,7 @@ public class RecyclerViewAdapterPendingConnections  extends RecyclerView.Adapter
         public TextView txtmotherland;
         public TextView txtBadge;
         public LinearLayout parent;
+        public TextView txtPendingText;
 
         public User user;
 
@@ -74,6 +77,12 @@ public class RecyclerViewAdapterPendingConnections  extends RecyclerView.Adapter
             txtmotherland = itemView.findViewById(R.id.txtMotherlandConnectionRequests);
             txtUsername = itemView.findViewById(R.id.txtUsernameConnectionRequests);
             txtBadge = itemView.findViewById(R.id.txtBadgeConnectionRequests);
+            txtPendingText = itemView.findViewById(R.id.txtConnectionCardApproved);
+
+            if(isPending)
+                txtPendingText.setVisibility(View.VISIBLE);
+            else
+                txtPendingText.setVisibility(View.GONE);
 
             parent.setOnClickListener(new View.OnClickListener() {
                 @Override

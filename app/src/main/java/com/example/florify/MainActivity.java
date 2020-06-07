@@ -12,9 +12,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -32,6 +36,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.florify.adapters.SectionPageAdapter;
+import com.example.florify.db.services.FetchPostsService;
 import com.example.florify.dialogs.FiltersDialog;
 import com.example.florify.dialogs.OnFiltersSubmitted;
 import com.example.florify.fragments.FeedFragment;
@@ -40,17 +45,21 @@ import com.example.florify.fragments.ProfileFragment;
 import com.example.florify.fragments.SettingsFragment;
 import com.example.florify.helpers.FileHelper;
 import com.example.florify.helpers.MapResolver;
+import com.example.florify.listeners.OnFetchPostsCompleted;
+import com.example.florify.models.Post;
 import com.example.florify.models.PostFilters;
 import com.example.florify.services.BackgroundService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnFiltersSubmitted {
+public class MainActivity extends AppCompatActivity implements OnFiltersSubmitted, OnFetchPostsCompleted {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private Session session;
@@ -70,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
             btnMenuPendingConnections, btnMenuScoreboard, btnMenuLogout;
     private FileHelper fileHelper;
 
+    private ArrayList<String> autocompleteList = new ArrayList<>();
     private FiltersDialog filtersDialog;
     private ActionBar actionBar;
 
@@ -169,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                     case 0 : {
                         bottomNavigationView.getMenu().getItem(0).setChecked(true);
                         prevMenuItem = bottomNavigationView.getMenu().getItem(0);
+                        actionBar.hide();
                         break;
                     }
                     case 1 : {
@@ -177,11 +188,13 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                                 .getItem(1)
                                 .setChecked(true);
                         prevMenuItem = bottomNavigationView.getMenu().getItem(1);
+                        actionBar.hide();
                         break;
                     }
                     case 2 : {
                         bottomNavigationView.getMenu().getItem(3).setChecked(true);
                         prevMenuItem = bottomNavigationView.getMenu().getItem(3);
+                        actionBar.hide();
                         break;
                     }
                     case 3 : {
@@ -217,14 +230,13 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
                     }
                     case "profile" : {
                         actionBar.hide();
-                       viewPager.setCurrentItem(2);
+                        viewPager.setCurrentItem(2);
                         return true;
                     }
                     case "settings" : {
-                        viewPager.setCurrentItem(3);
                         actionBar.hide();
+                        viewPager.setCurrentItem(3);
                         return true;
-
                     }
                 }
                 return false;
@@ -249,7 +261,18 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
             }
             return;
         }
+        popupdatePlantList();
 
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    feedFragment.searchByTextString(v.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
         startService(new Intent(this, BackgroundService.class));
     }
 
@@ -257,35 +280,43 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
         btnMenuConnections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, ConnectionsActivity.class);
+                startActivity(intent);
             }
         });
         btnMenuPendingConnections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, PendingConnectionsActivity.class);
+                startActivity(intent);
             }
         });
         btnMenuConnectionRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, ConnectionRequestActivity.class);
+                startActivity(intent);
             }
         });
         btnMenuScoreboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, ScoreboradActivity.class);
+                startActivity(intent);
             }
         });
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                //TODO implement logout
             }
         });
     }
-
 
     private void setupViewPager(ViewPager viewPager)
     {
@@ -370,6 +401,46 @@ public class MainActivity extends AppCompatActivity implements OnFiltersSubmitte
 
     }
 
+    public void popupdatePlantList() {
+        new FetchPostsService(this).execute();
+    }
+
+    @Override
+    public void onFetchCompleted(ArrayList<Post> posts) {
+
+        populateAutocomplete(posts);
+    }
+    private void populateAutocomplete(ArrayList<Post> posts) {
+
+        for (Post post : posts) {
+            autocompleteList.add(post.getPlantName());
+            autocompleteList.add(post.getPostType().toString());
+            for (String tag : post.getTags()) {
+                autocompleteList.add(tag);
+            }
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                getApplicationContext(),
+                R.layout.custom_autocompleteitem,
+                R.id.autoCompleteItem,
+                autocompleteList.toArray(new String[autocompleteList.size()])
+        );
+        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),
+                        "Position: " + position + " item: " + autocompleteList.get(position),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
     public class Encode_image extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
